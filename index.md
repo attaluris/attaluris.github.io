@@ -54,6 +54,7 @@
 
 
 ## Technical Skills & Interests
+
 | Languages | Technologies | Interests                  |
 |-----------|--------------|----------------------------|
 | Python    | Hive/Impala  | Mathematical Modeling      |
