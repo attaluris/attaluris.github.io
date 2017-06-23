@@ -54,16 +54,16 @@
 
 
 ## Technical Skills & Interests
-Languages | Technologies | Interests                  
------------|--------------|---------------------------
-Python    | Hive/Impala  | Mathematical Modeling      
-Java      | Sqoop        | Machine Learning           
-SQL       | Spark        | Data Mining                
-Scala     | Airflow      | Human–Computer Interaction 
-Scheme    | Git          | Mobile Design             
-          | Docker       | UI/UX Design               
-          | VMs          | Investing                  
-          | LaTeX        | Speed Reading              
-          | Photoshop    | Doodling                   
-          | Illustrator  |                            
-          | SolidWorks   |                            
+| Languages | Technologies | Interests                  |
+|-----------|--------------|----------------------------|
+| Python    | Hive/Impala  | Mathematical Modeling      |
+| Java      | Sqoop        | Machine Learning           |
+| SQL       | Spark        | Data Mining                |
+| Scala     | Airflow      | Human–Computer Interaction |
+| Scheme    | Git          | Mobile Design              |
+|           | Docker       | UI/UX Design               |
+|           | VMs          | Investing                  |
+|           | LaTeX        | Speed Reading              |
+|           | Photoshop    | Doodling                   |
+|           | Illustrator  |                            |
+|           | SolidWorks   |                            |
