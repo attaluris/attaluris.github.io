@@ -13,3 +13,5 @@
 * CS 70: Discrete Mathematics and Probability Theory
 * CS 170: Efficient Algorithms and Intractable Problems (current)
 * STAT 134: Concepts of Probability (current)
+
+![Headshot of Sritej](http://imgur.com/a/eZS3G)
