@@ -14,4 +14,4 @@
 * CS 170: Efficient Algorithms and Intractable Problems (current)
 * STAT 134: Concepts of Probability (current)
 
-![Headshot of Sritej](http://imgur.com/a/eZS3G)
+![Headshot of Sritej](http://i.imgur.com/aIlB1ND.jpg){:height="400px" width="400px"}
