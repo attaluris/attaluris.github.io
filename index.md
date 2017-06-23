@@ -1,4 +1,4 @@
-![Headshot of Sritej](http://i.imgur.com/aIlB1ND.jpg){:height="200px" width="200px"}
+![Headshot of Sritej](http://i.imgur.com/aIlB1ND.jpg){:height="300px" width="300px"}
 
 ## Currently...
 
@@ -42,10 +42,12 @@
 - **President @ Speech and Debate** July 2012–May 2016
   - International Public Policy Forum: Top 32 in World 2016; Top 64 in World 2015
   - Public Forum Debate and Impromptu Speaking: 1st places in various local tournaments
+  
 - **Graphic Designer and Resource Manager @ Solaris Racing** March 2015–May 2016
   - Designed, built and raced F1 cars made with Autodesk, balsa wood and plastic; practiced 3D Modeling and post-production; convinced local companies to sponsor us
   - National level: Judge's Choice & 1st in the US for the Verbal Presentation & 10th Place Overall
   - Southwest Regional level: Fastest Car & Best Engineered & Best Marketing Strategy & 2nd Place Overall
+  
 - **Graphic Designer @ Students for Sustainable Schools** July 2013–May 2016
   - Designed both logos for 5 member schools and reusable metal water bottles
   - Developed proposals and budgets for two projects: implementing solar power rooftops parking lots and implementing water bottle filling stations at Hamilton High School to reduce plastic waste.
