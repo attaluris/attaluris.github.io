@@ -22,11 +22,6 @@
 - **Biomuscles - The Effectiveness of Excess Heat Dissipation on Powering Nitinol Coils**	Summer 2013
   - Designed configurations for energy-efficient prosthetic skeletons using shape-memory alloys
 
-## Technical Skills & Interests
-**Languages** | Python; Java; SQL; Scala; Scheme
-**Technologies** | Hive; Impala; Sqoop; Spark; Airflow; Git; Docker; VMs; LaTeX; Photoshop; Illustrator; SolidWorks 
-**Interests** | Mathematical Modeling; Machine Learning; Data Mining; Human–Computer Interaction; Mobile Design; UI/UX Design; Investing; Speed Reading; Doodling
-
 ## Relevant Coursework
 
 - MATH 53: Multivariable Calculus
@@ -52,9 +47,23 @@
   - Designed both logos for 5 member schools and reusable metal water bottles
   - Developed proposals and budgets for two projects: implementing solar power rooftops parking lots and implementing water bottle filling stations at Hamilton High School to reduce plastic waste.
 
-
-
 ## Awards
 - **2017 APT UC Berkeley Case Competition, 2nd Place**	March 2017
 - **2015 Moody’s Mega Math Challenge, 7th Place**	February 2015
 - **2015 AMC 12 School Champion** February 2015
+
+
+## Technical Skills & Interests
+| Languages | Technologies | Interests                  |
+|-----------|--------------|----------------------------|
+| Python    | Hive/Impala  | Mathematical Modeling      |
+| Java      | Sqoop        | Machine Learning           |
+| SQL       | Spark        | Data Mining                |
+| Scala     | Airflow      | Human–Computer Interaction |
+| Scheme    | Git          | Mobile Design              |
+|           | Docker       | UI/UX Design               |
+|           | VMs          | Investing                  |
+|           | LaTeX        | Speed Reading              |
+|           | Photoshop    | Doodling                   |
+|           | Illustrator  |                            |
+|           | SolidWorks   |                            |
