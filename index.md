@@ -7,7 +7,7 @@
 
 ## Work Experience & Projects
 
-- **Aléatoire | Graphic Designer, Columnist**	June 2014–May 2016
+- **Graphic Designer @ Aléatoire**	June 2014–May 2016
   - Logo design & branding for almost a dozen distinct clients
   - Authored infographics on design trends in color and layout
   
