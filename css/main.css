@@ -17,11 +17,11 @@ body {
   direction: rtl;
 }
 #intro {
-  max-width:80%;
+  max-width: 90%;
 }
 
 ul {
-  max-width: 70%;
+  max-width: 90%;
 }
 h1, h2, h3, h4, h5, h6 {
   color:#222;
@@ -34,6 +34,11 @@ p, ul, ol, table, pre, dl {
 
 h1, h2, h3 {
   line-height:1.1;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%;
+  text-align: center;
 }
 
 h1 {
@@ -80,7 +85,7 @@ a:hover small {
 }
 
 .wrapper {
-  width:900px;
+  width:800px;
   margin:0 auto;
 }
 
@@ -126,6 +131,9 @@ th {
 }
 
 img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
   max-width:100%;
 }
 
