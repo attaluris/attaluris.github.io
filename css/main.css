@@ -94,6 +94,10 @@ a:hover small {
   color: #777;
 }
 
+p.pic_caption {
+  text-align: center;
+}
+
 #top {
   text-align: center;
 }
