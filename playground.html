@@ -3,25 +3,42 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <title>hi, I'm Sritej</title>
-    <link rel="icon" href="one.jpg">
+    <link rel="icon" href="assets/one.jpg">
     <link rel="stylesheet" href="css/main.css">
     <script type="text/javascript" src="js/playground.js"></script>
     <meta name="viewport" content="width=device-width">
  </head>
 <body>
+
+  <div class="topnav">
+    <a href="#contact">Contact</a>
+    <li class="dropdown">
+      <a href="javascript:void(0)" class="dropbtn">Fun Stuff</a>
+      <div class="dropdown-content">
+        <a class="dropdown-item" href="#">Movie Journal</a>
+        <a class="dropdown-item" href="#">Fruit List</a>
+        <a class="dropdown-item" href="#">Colors</a>
+        <a class="dropdown-item" href="#">Doggos</a>
+      </div>
+    </li>
+    <a href="#about">Resume</a>
+    <a class="active" href="#home">Overview</a>
+  </div>
+<br />
 <div class="wrapper">
 <div class="top">
 <h1><B>Sritej Attaluri</B></h1>
-<img src="one.jpg" alt="my roommate is a photographer" width="200" height="200">
+<img src="./assets/one.jpg" alt="my roommate is a photographer" width="200" height="200" id="profile" onclick="change()" />
+<div id="pic_caption" align="center">(business me)</div>
 </div>
 <div>&nbsp;</div>
 <hr />
-<div id="intro">I'm a student at UC Berkeley, where I'm majoring in Computer Science (and maybe Art History). I'm interested in distributed computing, probability, and <a href="http://fivethirtyeight.com">political forecasting</a>.
+<div id="intro">I'm a student at UC Berkeley, where I'm majoring in Computer Science (with an Art History minor). I'm interested in distributed computing, probability, and <a href="http://fivethirtyeight.com">political forecasting</a>.
 <div>&nbsp;</div>
 <div>Download my resume <a href="https://drive.google.com/file/d/0BxqbnJkBY22fQ1VnWkh6MlpzS0k/view?usp=sharing">here</a>.</div>
 <div><br />Currently:</div>
 <ul>
-<li>Front-end Developer Intern @ <a href="https://withjoy.com/">Joy</a></li>
+<li>Web Developer Intern @ <a href="https://withjoy.com/">Joy</a></li>
 <li>Startup Consultant @ <a href="http://www.berkeleyvss.com">Venture Strategy Solutions</a></li>
 <li>Attorney @ <a href="http://www.calmocktrial.com">Cal Mock Trial</a></li>
 </ul>
@@ -44,7 +61,7 @@ Things to talk to me about:
 <li>I fall asleep listening to the standup comedy station on Spotify.</li>
 <li>My dream job is to be a cast member of <a href="https://www.youtube.com/user/SaturdayNightLive/">Saturday Night Live</a>.</li>
 </ul>
-<div class="credits">simplistic website inspired by Allan Peng</div>
+<div class="credits"></div>
 </div>
 </body>
 </html>
