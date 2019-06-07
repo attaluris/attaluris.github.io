@@ -1,15 +1,15 @@
-var image_tracker = 'one';
+var image_tracker = 'four';
 
 function change() {
     var image = document.getElementById('profile');
-    if (image_tracker == 'one') {
+    if (image_tracker == 'four') {
         image.src = 'assets/two.jpg';
         pic_caption.innerHTML = '(flower me)';
         image_tracker = 'two';
     } else {
-        image.src = 'assets/one.jpg';
+        image.src = 'assets/four.jpg';
         pic_caption.innerHTML = '(business me)';
-        image_tracker = 'one';
+        image_tracker = 'four';
     }
 }
 
