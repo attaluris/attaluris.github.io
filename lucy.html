@@ -13,7 +13,7 @@
             <div class="top">
                 <h1><B><label id="Greetings"></label></B></h1>
               
-                <img src="./assets/four.jpg" alt="my roommate is a photographer" width="200" height="200" id="profile" onclick="change()" />
+                <img width="400" height="400" id="animal" />
                 <br />
             </div>
         </div>
@@ -22,6 +22,7 @@
   <script>
     var myDate = new Date();
     var hrs = myDate.getHours();
+    var date = myDate.getDate();
 
     var greet;
 
@@ -33,6 +34,9 @@
         greet = 'Good evening';
 
     document.getElementById('Greetings').innerHTML =
-        '' greet + ', Lucy!!!';
+        '<b>' + greet + '</b>, Lucy!!! <br> Here\'s a cute animal:';
+      
+    document.getElementById('animal').src =
+        "./assets/animals/" + date + ".png";
   </script> 
 </html>
