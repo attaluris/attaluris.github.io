@@ -12,8 +12,9 @@
         <div class="wrapper">
             <div class="top">
                 <h1><B><label id="Greetings"></label></B></h1>
-              
-                <img width="500" height="500" id="animal" />
+                <img height="500" id="animal" />
+                <br />
+                <h1><B>I love you :)</B></h1>
                 <br />
             </div>
         </div>
@@ -22,7 +23,10 @@
   <script>
     var myDate = new Date();
     var hrs = myDate.getHours();
-    var date = myDate.getDate();
+    var startOfYear = new Date(myDate.getFullYear(), 0, 0);
+    var diff = (myDate - startOfYear) + ((startOfYear.getTimezoneOffset() - myDate.getTimezoneOffset()) * 60 * 1000);
+    var oneDay = 1000 * 60 * 60 * 24;
+    var dayOfYear = Math.floor(diff / oneDay);
 
     var greet;
 
@@ -34,9 +38,14 @@
         greet = 'Good evening';
 
     document.getElementById('Greetings').innerHTML =
-        '<b>' + greet + '</b>, Lucy!!! <br> Here\'s your cute animal of the day:';
+        '<b>' + greet + '</b>, Lucy!!! <br> Here\'s your cute cat of the day:';
       
     document.getElementById('animal').src =
-        "./assets/animals/" + date + ".jpeg";
+        "./assets/anniversary/" + 12 + ".jpeg";
   </script> 
 </html>
+
+<!--
+to randomize filenames in bash:
+for i in *.jpeg; do mv $i $RANDOM.jpeg; done; ls -v | cat -n | while read n f; do mv -n "$f" "$n.jpeg"; done
+-->
