@@ -1,0 +1,32 @@
+<html>
+	Link to my items: <a href="https://order.ikea.com/us/en/checkout/shoppinglist/">https://order.ikea.com/us/en/checkout/shoppinglist/</a>
+	<br/>
+	IKEA stock for my items:
+	<br/>
+	<div id="stockOnPage"></div>
+	<br/>
+	time:
+	<br/>
+	<span id="timeOnPage"></span>
+</html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+	var timeOnPage = document.getElementById('timeOnPage');
+
+	function time() {
+	  var d = new Date();
+	  var s = d.getSeconds();
+	  var m = d.getMinutes();
+	  var h = d.getHours();
+	  timeOnPage.textContent = h + ":" + m + ":" + s;
+	}
+
+	$(document).ready(function(){
+   
+	   // $('#stockOnPage').load("https://order.ikea.com/us/en/checkout/shoppinglist/");
+	   $('#stockOnPage').load("index.html");
+
+	});
+
+	setInterval(time, 1000);
+</script>
