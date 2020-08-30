@@ -1,0 +1,84 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="chrome=1">
+        <title>Hey Lucy :)</title>
+        <link rel="icon" href="assets/one.jpg">
+        <link rel="stylesheet" href="css/main.css">
+        <script type="text/javascript" src="js/main.js"></script>
+        <meta name="viewport" content="width=device-width">
+    </head>
+    <body>
+        <div class="wrapper">
+            <div class="top">
+                <h1><B>Play this:</B></h1>
+                <h1 style="font-size: 100; height: 300px; background: lightsteelblue; display: flex; align-items: center; justify-content: center;"><B>
+                    <label id="whatToPlay"></label>
+                </B></h1>
+            </div>
+
+            Seconds before change:
+            <span
+                contenteditable="true"
+                style="border: solid 1px black; font: 400 13.3333px Arial; color: black;"
+                id="secondsInput"
+            >
+                10
+            </span>
+            List of items (separate by semicolon):
+            <span
+                contenteditable="true"
+                style="border: solid 1px black; font: 400 13.3333px Arial; color: black;"
+                id="optionsInput"
+            >
+                Maj7, A inversion; Min7, A inversion; Dom7, A inversion; Min7b5, A inversion; Maj7, E inversion; Min7, E inversion; Dom7, E inversion; Min7b5, E inversion
+            </span>
+            <br />
+            <button
+                onclick="updateAttributes()"
+                style="height: 30px; width: 20%; align-self: center"
+            >
+                Update
+            </button>
+        </div>
+    </body>
+  
+  <script>
+    var secondsInput = document.getElementById("secondsInput");
+    var timeout = secondsInput.innerHTML * 1000;
+
+    var optionsInput = document.getElementById("optionsInput");
+    var optionsInputText = optionsInput.innerHTML;
+    var options = optionsInputText.split(';');
+    var whatToPlay = options[Math.floor(Math.random() * options.length)];
+
+    document.getElementById('whatToPlay').innerHTML = whatToPlay;
+
+    function changeText(){
+        var whatToPlay = options[Math.floor(Math.random() * options.length)];
+        document.getElementById('whatToPlay').innerHTML = whatToPlay;
+    }
+
+    myTimer = setInterval(changeText, timeout);
+    changeText();
+
+    function updateAttributes() {
+        clearInterval(myTimer);
+        var secondsInput = document.getElementById("secondsInput");
+        var timeout = secondsInput.innerHTML * 1000;
+
+        var optionsInput = document.getElementById("optionsInput");
+        var optionsInputText = optionsInput.innerHTML;
+        options = optionsInputText.split(';');
+        var whatToPlay = options[Math.floor(Math.random() * options.length)];
+
+        myTimer = setInterval(changeText, timeout);
+        changeText();
+    }
+  </script> 
+</html>
+
+<!--
+to randomize filenames in bash:
+for i in *.jpeg; do mv $i $RANDOM.jpeg; done; ls -v | cat -n | while read n f; do mv -n "$f" "$n.jpeg"; done
+-->
