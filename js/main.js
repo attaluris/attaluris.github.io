@@ -4,11 +4,9 @@ function change() {
     var image = document.getElementById('profile');
     if (image_tracker == 'four') {
         image.src = 'assets/two.jpg';
-        pic_caption.innerHTML = '(flowers!)';
         image_tracker = 'two';
     } else {
         image.src = 'assets/four.jpg';
-        pic_caption.innerHTML = '(click for flowers)';
         image_tracker = 'four';
     }
 }
