@@ -5,11 +5,18 @@ function change() {
     if (image_tracker == 'four') {
         image.src = 'assets/two.jpg';
         image_tracker = 'two';
+        changeCSS('css/main_crazy.css')
     } else {
         image.src = 'assets/four.jpg';
         image_tracker = 'four';
+        changeCSS('css/main.css')
     }
 }
+
+function changeCSS(url){
+   var stylesheet = document.getElementById("stylesheet");
+   stylesheet.setAttribute('href', url);
+ }
 
 // function randNum(min, max) {
 //     min = Math.ceil(min);
