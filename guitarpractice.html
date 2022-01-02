@@ -40,6 +40,13 @@
             >
                 Update
             </button>
+            <br><br><br>
+            <button
+                onclick="pianoMajorScales()"
+                style="height: 30px; width: 20%; align-self: center; background-color: lightcoral"
+            >
+                Piano Major Scales
+            </button>
         </div>
     </body>
   
@@ -74,6 +81,14 @@
 
         myTimer = setInterval(changeText, timeout);
         changeText();
+    }
+
+    function pianoMajorScales() {
+        var secondsInput = document.getElementById("secondsInput");
+        secondsInput.innerHTML = 60;
+        var optionsInput = document.getElementById("optionsInput");
+        optionsInput.innerHTML = "C Major; G Major; D Major; A Major; E Major; B Major; F Major; F Sharp/G Flat Major; C Sharp/D Flat Major; A Sharp/B Flat Major; D Sharp/E Flat Major; G Sharp/A Flat Major";
+        updateAttributes();
     }
   </script> 
 </html>
