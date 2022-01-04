@@ -22,17 +22,12 @@
                 contenteditable="true"
                 style="border: solid 1px black; font: 400 13.3333px Arial; color: black;"
                 id="secondsInput"
-            >
-                10
-            </span>
+            >10</span>
             List of items (separate by semicolon):
-            <span
-                contenteditable="true"
+            <textarea
                 style="border: solid 1px black; font: 400 13.3333px Arial; color: black;"
                 id="optionsInput"
-            >
-                Maj7, A inversion; Min7, A inversion; Dom7, A inversion; Min7b5, A inversion; Maj7, E inversion; Min7, E inversion; Dom7, E inversion; Min7b5, E inversion
-            </span>
+            >Maj7, A inversion; Min7, A inversion; Dom7, A inversion; Min7b5, A inversion; Maj7, E inversion; Min7, E inversion; Dom7, E inversion; Min7b5, E inversion</textarea>
             <br />
             <button
                 onclick="updateAttributes()"
@@ -52,18 +47,18 @@
   
   <script>
     var secondsInput = document.getElementById("secondsInput");
-    var timeout = secondsInput.innerHTML * 1000;
+    var timeout = secondsInput.innerText * 1000;
 
     var optionsInput = document.getElementById("optionsInput");
-    var optionsInputText = optionsInput.innerHTML;
+    var optionsInputText = optionsInput.value;
     var options = optionsInputText.split(';');
     var whatToPlay = options[Math.floor(Math.random() * options.length)];
 
-    document.getElementById('whatToPlay').innerHTML = whatToPlay;
+    document.getElementById('whatToPlay').innerText = whatToPlay;
 
     function changeText(){
         var whatToPlay = options[Math.floor(Math.random() * options.length)];
-        document.getElementById('whatToPlay').innerHTML = whatToPlay;
+        document.getElementById('whatToPlay').innerText = whatToPlay;
     }
 
     myTimer = setInterval(changeText, timeout);
@@ -72,10 +67,10 @@
     function updateAttributes() {
         clearInterval(myTimer);
         var secondsInput = document.getElementById("secondsInput");
-        var timeout = secondsInput.innerHTML * 1000;
+        var timeout = secondsInput.innerText * 1000;
 
         var optionsInput = document.getElementById("optionsInput");
-        var optionsInputText = optionsInput.innerHTML;
+        var optionsInputText = optionsInput.value;
         options = optionsInputText.split(';');
         var whatToPlay = options[Math.floor(Math.random() * options.length)];
 
@@ -85,9 +80,9 @@
 
     function pianoMajorScales() {
         var secondsInput = document.getElementById("secondsInput");
-        secondsInput.innerHTML = 60;
+        secondsInput.innerText = 60;
         var optionsInput = document.getElementById("optionsInput");
-        optionsInput.innerHTML = "C Major; G Major; D Major; A Major; E Major; B Major; F Major; F Sharp/G Flat Major; C Sharp/D Flat Major; A Sharp/B Flat Major; D Sharp/E Flat Major; G Sharp/A Flat Major";
+        optionsInput.value = "C Major; G Major; D Major; A Major; E Major; B Major; F Major; F Sharp/G Flat Major; C Sharp/D Flat Major; A Sharp/B Flat Major; D Sharp/E Flat Major; G Sharp/A Flat Major";
         updateAttributes();
     }
   </script> 
