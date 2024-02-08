@@ -1,0 +1,108 @@
+<html>
+	<div id="teams">
+	  <h3 align="center"> Team Stable Marriage Calculator </h3>
+	  Enter all teams:
+	  <br>
+	</div>
+
+
+	<button type="button" onclick="javascript:addTeam();"> Add</button>
+
+	<div id="candidates">
+	  Enter all candidates:
+	  <br>
+	</div>
+
+
+	<button type="button" onclick="javascript:addCandidate();"> Add</button>
+
+	<div>
+	  <br>
+	  <button type="button" onclick="javascript:updateSetup();"> Update Setup</button>
+
+	  <br>
+	  <span id="teamPreferences"></span>
+	  <span id="candidatePreferences"></span>
+	</div>
+	<br>
+	<br>
+</html>
+<script>
+	var teams_id = 0;
+	var candidates_id = 0;
+
+
+	function removeElement(ev) {
+	  var button = ev.target;
+	  var field = button.previousSibling;
+	  var br = button.nextSibling;
+	  var div = button.parentElement;
+	  div.removeChild(button);
+	  div.removeChild(field);
+	  div.removeChild(br);
+	}
+
+	function addTeam() {
+	  teams_id++; // increment reqs_id to get a unique ID for the new element
+
+	  //create textbox
+	  var input = document.createElement('input');
+	  input.type = "text";
+	  input.setAttribute('id', 'teams' + teams_id);
+	  input.setAttribute('value', "");
+	  var teams = document.getElementById("teams");
+	  //create remove button
+	  var remove = document.createElement('button');
+	  remove.setAttribute('id', 'teamsr' + teams_id);
+	  remove.onclick = function(e) {
+	    removeElement(e)
+	    teams_id--
+	  };
+	  remove.setAttribute("type", "button");
+	  remove.innerHTML = "Remove";
+	  //append elements
+	  teams.appendChild(input);
+	  teams.appendChild(remove);
+	  teams.appendChild(document.createElement("br"));
+	}
+
+	function addCandidate() {
+	  candidates_id++; // increment reqs_id to get a unique ID for the new element
+
+	  //create textbox
+	  var input = document.createElement('input');
+	  input.type = "text";
+	  input.setAttribute('id', 'candidates' + candidates_id);
+	  input.setAttribute('value', "");
+	  var candidates = document.getElementById("candidates");
+	  //create remove button
+	  var remove = document.createElement('button');
+	  remove.setAttribute('id', 'candidatesr' + candidates_id);
+	  remove.onclick = function(e) {
+	    removeElement(e)
+	    candidates--
+	  };
+	  remove.setAttribute("type", "button");
+	  remove.innerHTML = "Remove";
+	  //append elements
+	  candidates.appendChild(input);
+	  candidates.appendChild(remove);
+	  candidates.appendChild(document.createElement("br"));
+	}
+
+	function updateSetup() {
+	  var teamPreferences = document.getElementById("teamPreferences");
+	  teamPreferences.innerHTML = "Enter Team Preferences <br> (separated by commas): <br>" + teams_id + " " + candidates_id + "<br> Team Name || # of members <br>";
+
+	  for (i = 1; i <= teams_id; i++) {
+	    var label = document.createElement('label');
+	    label.innerHTML = document.getElementById("teams" + i).value + " ";
+	    var input = document.createElement('input');
+	    teamPreferences.appendChild(label);
+	    teamPreferences.appendChild(input);
+	    teamPreferences.appendChild(document.createElement("br"));
+	  }
+
+	}
+
+</script>
