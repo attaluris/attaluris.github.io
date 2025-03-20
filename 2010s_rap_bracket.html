@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style> .bracket { display: flex; justify-content: space-between; padding: 10px; min-height: 500px; width: 100%; overflow-x: auto; box-sizing: border-box; } .round { display: flex; flex-direction: column; justify-content: space-around; min-width: 180px; margin: 0 5px; } .match { display: flex; flex-direction: column; margin: 3px; border: 1px solid #ccc; padding: 5px; border-radius: 3px; font-size: 12px; } .team { padding: 3px; cursor: pointer; transition: background-color 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .team:hover { background-color: #eee; } .winner { background-color: #90EE90; } /* Media query for smaller screens */ @media (max-width: 1200px) { .round { min-width: 150px; } .match { font-size: 11px; padding: 3px; } } /* Media query for mobile screens */ @media (max-width: 768px) { .bracket { overflow-x: scroll; } .round { min-width: 120px; } } </style>
+</head>
+<body>
+    <div id="bracket" class="bracket"></div>
+
+    <script>
+        class Tournament {
+            constructor() {
+                this.rounds = [];
+                this.initializeRounds();
+                this.render();
+            }
+
+            initializeRounds() {
+                // Round 1 - 16 matches with 32 teams
+                this.rounds.push([
+                    {
+                        team1: "Young Thug - Beautiful Thugger Girls",
+                        team2: "Kanye West - My Beautiful Dark Twisted Fantasy",
+                        winner: null
+                    },
+                    {
+                        team1: "Kendrick Lamar - To Pimp a Butterfly",
+                        team2: "Willow - ARDIPITHECUS",
+                        winner: null
+                    },
+                    {
+                        team1: "Vince Staples - Big Fish Theory",
+                        team2: "Kendrick Lamar - Good Kid, M.A.A.D City",
+                        winner: null
+                    },
+                    {
+                        team1: "Cardi B - Invasion of Privacy",
+                        team2: "Tierra Whack - Whack World",
+                        winner: null
+                    },
+                    {
+                        team1: "Smino - blkswn",
+                        team2: "Drake - Views",
+                        winner: null
+                    },
+                    {
+                        team1: "J. Cole - 2014 Forest Hills Drive",
+                        team2: "Saba - Care For Me",
+                        winner: null
+                    },
+                    {
+                        team1: "Run The Jewels - Run The Jewels 3",
+                        team2: "Travis Scott - Birds in the Trap Sing McKnight",
+                        winner: null
+                    },
+                    {
+                        team1: "Tyler, The Creator - Flower Boy",
+                        team2: "Pusha T - Daytona",
+                        winner: null
+                    },
+                    {
+                        team1: "Noname - Telefone",
+                        team2: "Migos - Culture",
+                        winner: null
+                    },
+                    {
+                        team1: "A$AP Rocky - At. Long. Last. A$AP",
+                        team2: "Nas - Life is Good",
+                        winner: null
+                    },
+                    {
+                        team1: "Mac Miller - Swimming",
+                        team2: "Anderson .Paak - Malibu",
+                        winner: null
+                    },
+                    {
+                        team1: "Chance the Rapper - Acid Rap",
+                        team2: "Little Simz - Grey Area",
+                        winner: null
+                    },
+                    {
+                        team1: "Kid Cudi - Man on the Moon II: The Legend of Mr. Rager",
+                        team2: "Dave - Psychodrama",
+                        winner: null
+                    },
+                    {
+                        team1: "J.I.D - DiCaprio 2",
+                        team2: "Kanye West - The Life of Pablo",
+                        winner: null
+                    },
+                    {
+                        team1: "JPEGMAFIA - Veteran",
+                        team2: "Joey Bada$$ - 1999",
+                        winner: null
+                    },
+                    {
+                        team1: "Amine - Good for You",
+                        team2: "Brockhampton - Saturation II",
+                        winner: null
+                    }
+                ]);
+
+                // Round 2-5 - subsequent rounds with empty matches
+                for (let i = 0; i < 4; i++) {
+                    this.rounds.push(Array(Math.pow(2, 3 - i)).fill().map(() => ({
+                        team1: null,
+                        team2: null,
+                        winner: null
+                    })));
+                }
+            }
+
+            handleWinner(roundIndex, matchIndex, winner) {
+    const match = this.rounds[roundIndex][matchIndex];
+    
+    // If clicking the current winner, undo the selection
+    if (match.winner === winner) {
+        const removedWinner = match.winner;
+        match.winner = null;
+        
+        // Clear all subsequent rounds that were affected by this match
+        this.clearSubsequentRounds(roundIndex, matchIndex);
+        
+        // Recursively check and clear this winner from all future rounds
+        for (let i = roundIndex + 1; i < this.rounds.length; i++) {
+            this.rounds[i].forEach((futureMatch, idx) => {
+                if (futureMatch.team1 === removedWinner) {
+                    futureMatch.team1 = null;
+                    if (futureMatch.winner === removedWinner) {
+                        futureMatch.winner = null;
+                        this.clearSubsequentRounds(i, idx);
+                    }
+                }
+                if (futureMatch.team2 === removedWinner) {
+                    futureMatch.team2 = null; 
+                    if (futureMatch.winner === removedWinner) {
+                        futureMatch.winner = null;
+                        this.clearSubsequentRounds(i, idx);
+                    }
+                }
+            });
+        }
+    }
+    // Otherwise set new winner
+    else {
+        match.winner = winner;
+        
+        // Advance winner to next round if exists
+        if (roundIndex < this.rounds.length - 1) {
+            const nextMatchIndex = Math.floor(matchIndex / 2);
+            const nextMatch = this.rounds[roundIndex + 1][nextMatchIndex];
+            
+            if (matchIndex % 2 === 0) {
+                nextMatch.team1 = winner;
+            } else {
+                nextMatch.team2 = winner;
+            }
+            
+            // If the next match already had a winner and it was the team we just replaced,
+            // we need to clear that winner and all subsequent affected matches
+            if (nextMatch.winner === (matchIndex % 2 === 0 ? nextMatch.team1 : nextMatch.team2) && 
+                nextMatch.winner !== winner) {
+                nextMatch.winner = null;
+                this.clearSubsequentRounds(roundIndex + 1, nextMatchIndex);
+            }
+        }
+    }
+
+    this.render();
+}
+
+clearSubsequentRounds(roundIndex, matchIndex) {
+    // Start from the next round
+    for (let i = roundIndex + 1; i < this.rounds.length; i++) {
+        // Calculate which match in the next round would be affected
+        const nextMatchIndex = Math.floor(matchIndex / Math.pow(2, i - roundIndex));
+        const nextMatch = this.rounds[i][nextMatchIndex];
+        
+        // Determine if this team was team1 or team2 in the next match
+        const isTeam1 = (matchIndex / Math.pow(2, i - roundIndex)) % 2 === 0;
+        
+        // Clear the appropriate team
+        if (isTeam1) {
+            // If team1 is being cleared and was the winner, clear the winner too
+            if (nextMatch.winner === nextMatch.team1) {
+                nextMatch.winner = null;
+            }
+            nextMatch.team1 = null;
+        } else {
+            // If team2 is being cleared and was the winner, clear the winner too
+            if (nextMatch.winner === nextMatch.team2) {
+                nextMatch.winner = null;
+            }
+            nextMatch.team2 = null;
+        }
+        
+        // If this match had a winner and now has no winner, cascade to next round
+        if (nextMatch.winner === null) {
+            // Continue the cascade only if this match previously had a winner
+            this.clearSubsequentRounds(i, nextMatchIndex);
+        }
+    }
+}
+
+
+            render() {
+                const bracketEl = document.getElementById('bracket');
+                bracketEl.innerHTML = '';
+
+                this.rounds.forEach((round, roundIndex) => {
+                    const roundEl = document.createElement('div');
+                    roundEl.className = 'round';
+
+                    round.forEach((match, matchIndex) => {
+                        const matchEl = document.createElement('div');
+                        matchEl.className = 'match';
+
+                        const team1El = document.createElement('div');
+                        team1El.className = 'team';
+                        team1El.textContent = match.team1 || 'TBD';
+                        if (match.winner === match.team1) team1El.classList.add('winner');
+                        team1El.onclick = () => match.team1 && this.handleWinner(roundIndex, matchIndex, match.team1);
+
+                        const team2El = document.createElement('div');
+                        team2El.className = 'team';
+                        team2El.textContent = match.team2 || 'TBD';
+                        if (match.winner === match.team2) team2El.classList.add('winner');
+                        team2El.onclick = () => match.team2 && this.handleWinner(roundIndex, matchIndex, match.team2);
+
+                        matchEl.appendChild(team1El);
+                        matchEl.appendChild(team2El);
+                        roundEl.appendChild(matchEl);
+                    });
+
+                    bracketEl.appendChild(roundEl);
+                });
+            }
+        }
+
+        // Initialize tournament when page loads
+        window.onload = () => new Tournament();
+    </script>
+</body>
+</html>
