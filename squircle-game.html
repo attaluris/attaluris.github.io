@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Square or Circle? - The Squircle Game</title>
+    <link rel="stylesheet" href="css/main.css">
     <style>
         * {
             margin: 0;
@@ -12,51 +13,50 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #fff;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #595959;
         }
 
         .container {
             text-align: center;
-            max-width: 600px;
+            max-width: 800px;
             padding: 2rem;
         }
 
         h1 {
-            font-size: 2.5rem;
+            font-size: 40px;
+            font-weight: 600;
+            color: #222;
             margin-bottom: 1rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
         .instructions {
-            font-size: 1.1rem;
+            font-size: 20px;
             margin-bottom: 2rem;
-            opacity: 0.9;
             line-height: 1.5;
+            color: #595959;
         }
 
         .game-area {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            background: #f8f8f8;
+            border-radius: 10px;
             padding: 3rem;
             margin: 2rem 0;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #e5e5e5;
         }
 
         .shape {
             width: 200px;
             height: 200px;
-            background: #ff6b6b;
+            background: #7A80B1;
             margin: 2rem auto;
             transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
         .buttons {
@@ -68,81 +68,80 @@
 
         button {
             padding: 1rem 2rem;
-            font-size: 1.2rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border: 2px solid #39c;
+            border-radius: 5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            background: white;
+            color: #39c;
         }
 
-        .square-btn {
-            background: linear-gradient(45deg, #ff9a56, #ff6b6b);
+        .square-btn:hover, .circle-btn:hover {
+            background: #39c;
             color: white;
+            transform: translateY(-2px);
         }
 
-        .circle-btn {
-            background: linear-gradient(45deg, #4ecdc4, #44a08d);
-            color: white;
+        .square-btn:active, .circle-btn:active {
+            background: #069;
+            border-color: #069;
         }
 
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
 
-        button:active {
-            transform: translateY(-1px);
-        }
-
-        .stats {
+        .status {
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
             margin: 1rem 0;
             font-size: 1.1rem;
         }
 
         .stat {
-            background: rgba(255, 255, 255, 0.1);
+            background: #f6f6f6;
             padding: 0.5rem 1rem;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            color: #595959;
         }
 
         .results {
             display: none;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            background: #f8f8f8;
+            border-radius: 10px;
             padding: 2rem;
             margin-top: 2rem;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #e5e5e5;
         }
 
         .results h2 {
             margin-bottom: 1rem;
             font-size: 2rem;
+            color: #222;
         }
 
         .threshold {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #ffd93d;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            color: #7A80B1;
         }
 
         .restart-btn {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+            background: #7A80B1;
             color: white;
+            border: 2px solid #7A80B1;
             margin-top: 1rem;
+        }
+
+        .restart-btn:hover {
+            background: #69709a;
+            border-color: #69709a;
         }
 
         .progress {
             width: 100%;
-            height: 10px;
-            background: rgba(255, 255, 255, 0.2);
+            height: 8px;
+            background: #e5e5e5;
             border-radius: 5px;
             margin: 1rem 0;
             overflow: hidden;
@@ -150,7 +149,7 @@
 
         .progress-bar {
             height: 100%;
-            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            background: #7A80B1;
             width: 0%;
             transition: width 0.3s ease;
         }
@@ -160,14 +159,13 @@
     <div class="container">
         <h1>Square or Circle?</h1>
         <p class="instructions">
-            Look at each shape and decide: is it more of a <strong>square</strong> or a <strong>circle</strong>?<br>
-            We'll determine your personal threshold on the square-circle spectrum!
+            Classify each <strong>squircle</strong> as more square or circle.<br>
+            Let's find your personal threshold!
         </p>
 
         <div class="game-area" id="gameArea">
-            <div class="stats">
-                <div class="stat">Round: <span id="round">0</span>/20</div>
-                <div class="stat">Score: <span id="score">0</span></div>
+            <div class="status">
+                <div class="stat">Finding your squircle threshold...</div>
             </div>
 
             <div class="progress">
@@ -192,51 +190,87 @@
     </div>
 
     <script>
-        let currentRound = 0;
-        let totalRounds = 20;
-        let score = 0;
         let gameData = [];
         let currentBorderRadius = 0;
+        let samplingPhase = 'random';
+        let randomSamplesCount = 0;
+        let maxRandomSamples = 5;
+        let convergenceCount = 0;
+        let lastThreshold = null;
 
         function getRandomBorderRadius() {
             return Math.floor(Math.random() * 101);
         }
 
+        function getAdaptiveBorderRadius() {
+            if (gameData.length < 2) return getRandomBorderRadius();
+
+            const threshold = calculateCurrentThreshold();
+            if (threshold === null) return getRandomBorderRadius();
+
+            const range = Math.max(15, Math.abs(threshold * 0.3));
+            const min = Math.max(0, threshold - range);
+            const max = Math.min(100, threshold + range);
+
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
         function updateShape() {
             const shape = document.getElementById('shape');
-            currentBorderRadius = getRandomBorderRadius();
+
+            if (samplingPhase === 'random' && randomSamplesCount < maxRandomSamples) {
+                currentBorderRadius = getRandomBorderRadius();
+                randomSamplesCount++;
+                if (randomSamplesCount >= maxRandomSamples) {
+                    samplingPhase = 'adaptive';
+                }
+            } else {
+                currentBorderRadius = getAdaptiveBorderRadius();
+            }
+
             shape.style.borderRadius = `${currentBorderRadius}%`;
         }
 
-        function updateStats() {
-            document.getElementById('round').textContent = currentRound;
-            document.getElementById('score').textContent = score;
-            document.getElementById('progressBar').style.width = `${(currentRound / totalRounds) * 100}%`;
+        function updateProgress() {
+            const progress = Math.min(100, (gameData.length / 15) * 100);
+            document.getElementById('progressBar').style.width = `${progress}%`;
         }
 
         function makeChoice(choice) {
-            const isCorrect = (choice === 'square' && currentBorderRadius < 50) ||
-                             (choice === 'circle' && currentBorderRadius >= 50);
-
-            if (isCorrect) score++;
-
             gameData.push({
                 borderRadius: currentBorderRadius,
-                choice: choice,
-                correct: isCorrect
+                choice: choice
             });
 
-            currentRound++;
-            updateStats();
+            updateProgress();
 
-            if (currentRound >= totalRounds) {
+            if (shouldStopGame()) {
                 showResults();
             } else {
                 updateShape();
             }
         }
 
-        function calculateThreshold() {
+        function shouldStopGame() {
+            if (gameData.length < 8) return false;
+
+            const currentThreshold = calculateCurrentThreshold();
+            if (currentThreshold === null) return false;
+
+            if (lastThreshold !== null) {
+                if (Math.abs(currentThreshold - lastThreshold) <= 2) {
+                    convergenceCount++;
+                    if (convergenceCount >= 3) return true;
+                } else {
+                    convergenceCount = 0;
+                }
+            }
+
+            lastThreshold = currentThreshold;
+            return gameData.length >= 20;
+        }
+
+        function calculateCurrentThreshold() {
             let squareChoices = gameData.filter(d => d.choice === 'square').map(d => d.borderRadius);
             let circleChoices = gameData.filter(d => d.choice === 'circle').map(d => d.borderRadius);
 
@@ -247,6 +281,10 @@
             let minCircleRadius = Math.min(...circleChoices);
 
             return Math.round((maxSquareRadius + minCircleRadius) / 2);
+        }
+
+        function calculateThreshold() {
+            return calculateCurrentThreshold();
         }
 
         function getInterpretation(threshold) {
@@ -275,17 +313,19 @@
         }
 
         function restartGame() {
-            currentRound = 0;
-            score = 0;
             gameData = [];
+            samplingPhase = 'random';
+            randomSamplesCount = 0;
+            convergenceCount = 0;
+            lastThreshold = null;
             document.getElementById('gameArea').style.display = 'block';
             document.getElementById('results').style.display = 'none';
-            updateStats();
+            updateProgress();
             updateShape();
         }
 
         function startGame() {
-            updateStats();
+            updateProgress();
             updateShape();
         }
 
