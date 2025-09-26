@@ -1,0 +1,23 @@
+# Jekyll configuration for clean URLs
+permalink: /:title/
+
+# Exclude files from Jekyll processing
+exclude:
+  - README.md
+  - .gitignore
+
+# Enable plugins
+plugins:
+  - jekyll-optional-front-matter
+
+# Allow files without front matter to be processed
+optional_front_matter:
+  enabled: true
+
+# Set defaults for pages
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: none
