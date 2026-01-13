@@ -1,217 +1,948 @@
 ---
 title: books
 ---
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="chrome=1">
-        <title>Sritej's books</title>
-        <link rel="icon" href="assets/four.jpg">
-        <link rel="stylesheet" href="css/main.css">
-        <script type="text/javascript" src="js/main.js"></script>
-        <meta name="viewport" content="width=device-width">
-    </head>
-    <body>
-        <div class="wrapper">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Sritej's books - Graph View</title>
+    <link rel="icon" href="assets/four.jpg">
+    <meta name="viewport" content="width=device-width">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #1a1a2e;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 15px 20px;
+            background: rgba(26, 26, 46, 0.95);
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .header a {
+            color: #8b8bcd;
+            text-decoration: none;
+        }
+
+        .header a:hover {
+            color: #b8b8ff;
+        }
+
+        .header h1 {
+            color: #fff;
+            margin: 0;
+            font-size: 1.2em;
+        }
+
+        #graph {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(30, 30, 50, 0.95);
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 10px 14px;
+            color: #fff;
+            font-size: 13px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.15s;
+            max-width: 300px;
+            z-index: 1000;
+        }
+
+        .tooltip .title {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .tooltip .author {
+            color: #aaa;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .tooltip .type {
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bottom-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .legend {
+            background: rgba(30, 30, 50, 0.9);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+            color: #ccc;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .legend-item:hover {
+            color: #fff;
+        }
+
+        .legend-item.disabled {
+            opacity: 0.4;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .controls {
+            background: rgba(30, 30, 50, 0.9);
+            border: 1px solid #444;
+            border-radius: 8px;
+            padding: 12px 16px;
+        }
+
+        .controls label {
+            color: #ccc;
+            font-size: 12px;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .controls input[type="range"] {
+            width: 120px;
+        }
+
+        .controls select {
+            background: #2a2a4e;
+            border: 1px solid #444;
+            color: #ccc;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            width: 128px;
+        }
+
+        .search-container {
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .search-container input {
+            background: rgba(30, 30, 50, 0.9);
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #fff;
+            font-size: 13px;
+            width: 200px;
+        }
+
+        .search-container input::placeholder {
+            color: #666;
+        }
+
+        .search-container input:focus {
+            outline: none;
+            border-color: #8b8bcd;
+        }
+
+        .clear-btn {
+            background: rgba(30, 30, 50, 0.9);
+            border: 1px solid #444;
+            border-radius: 6px;
+            padding: 8px 12px;
+            color: #888;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .clear-btn:hover {
+            color: #fff;
+            border-color: #666;
+        }
+
+        /* Side panel */
+        .side-panel {
+            position: fixed;
+            top: 53px;
+            right: 0;
+            width: 320px;
+            height: calc(100vh - 53px);
+            background: rgba(25, 25, 40, 0.98);
+            border-left: 1px solid #333;
+            z-index: 99;
+            transform: translateX(100%);
+            transition: transform 0.2s ease;
+            overflow-y: auto;
+        }
+
+        .side-panel.open {
+            transform: translateX(0);
+        }
+
+        .side-panel-header {
+            position: sticky;
+            top: 0;
+            padding: 16px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            background: rgba(25, 25, 40, 0.98);
+            z-index: 1;
+        }
+
+        .side-panel-header h2 {
+            margin: 0;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .side-panel-header .type-badge {
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 3px;
+            margin-top: 4px;
+            display: inline-block;
+        }
+
+        .side-panel-header .type-badge.genre {
+            background: rgba(56, 189, 248, 0.2);
+            color: #38bdf8;
+        }
+
+        .side-panel-header .type-badge.topic {
+            background: rgba(74, 222, 128, 0.2);
+            color: #4ade80;
+        }
+
+        .side-panel-header .type-badge.book {
+            background: rgba(232, 121, 249, 0.2);
+            color: #e879f9;
+        }
+
+        .close-panel {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .close-panel:hover {
+            color: #fff;
+        }
+
+        .side-panel-content {
+            padding: 16px;
+        }
+
+        .side-panel-section {
+            margin-bottom: 20px;
+        }
+
+        .side-panel-section h3 {
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 0 0 10px 0;
+        }
+
+        .book-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .book-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #2a2a4e;
+            color: #ccc;
+            font-size: 13px;
+        }
+
+        .book-list li:last-child {
+            border-bottom: none;
+        }
+
+        .book-list .author {
+            color: #666;
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .tag {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .tag.genre {
+            background: rgba(56, 189, 248, 0.15);
+            color: #38bdf8;
+        }
+
+        .tag.topic {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+        }
+
+        .tag:hover {
+            opacity: 0.8;
+        }
+
+        .book-meta {
+            color: #888;
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="http://www.sritej.com">&larr; back to site</a>
+        <h1>Books I've Read - Graph View</h1>
+        <a href="https://www.goodreads.com/review/list/75817134?shelf=to-read" target="_blank">Goodreads</a>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Search books, genres, topics...">
+        <button class="clear-btn" id="clearSelection">Clear</button>
+    </div>
+
+    <div id="graph"></div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <div class="side-panel" id="sidePanel">
+        <div class="side-panel-header">
             <div>
-                <a href="http://www.sritej.com">← back to site</a>
+                <h2 id="panelTitle">Title</h2>
+                <span class="type-badge" id="panelBadge">type</span>
             </div>
-            <div class="top">
-                <h1><B>Books I've read</B></h1>
-            </div>
-            <hr />
-            <div>
-            	Follow me on <a href="https://www.goodreads.com/review/list/75817134?shelf=to-read">Goodreads</a> to see my to-read list!
-            	<br />
-                <br />
-                <div>
-                    <B>Genres</B><br />
-                    <a href="#memoirs">Memoirs</a><br />
-                    <a href="#history">Critical Theory / History</a><br />
-                    <a href="#poetry">Poetry</a><br />
-                    <a href="#technology">Technology / Science</a><br />
-                    <a href="#art history">Art History</a><br />
-                    <a href="#fiction series">Fiction (Series)</a><br />
-                    <a href="#fiction classic">Fiction (Classic)</a><br />
-                    <a href="#fiction other">Fiction (Other)</a><br />
-                </div>
-                <br />
-                <hr />
-                <B id="memoirs">Memoirs:</B>
-                <ol>
-                    <li>Fun Home: A Family Tragicomic, Alison Bechdel, 5/5</li>
-                    <li>The Fire Next Time, James Baldwin, 5/5</li>
-                    <li>The Last Black Unicorn, Tiffany Haddish, 5/5</li>
-                    <li>Educated, Tara Westover, 5/5</li>
-                    <li>Thick: And Other Essays, Tressie McMillan Cottom, 5/5</li>
-                    <li>Hunger: A Memoir of (My) Body, Roxane Gay, 5/5</li>
-                    <li>Night, Elie Wiesel, 5/5</li>
-                    <li>Born a Crime: Stories From a South African Childhood, Trevor Noah, 5/5</li>
-                    <li>Uncanny Valley: A Memoir, Anna Wiener, 4/5</li>
-                    <li>The Diary of a Young Girl, Anne Frank, 4/5</li>
-                    <li>Persepolis 2: The Story of a Return (Persepolis, #2), Marjane Satrapi, 4/5</li>
-                    <li>Persepolis: The Story of a Childhood (Persepolis, #1), Marjane Satrapi, 4/5</li>
-                    <li>Is Everyone Hanging Out Without Me? (And Other Concerns), Mindy Kaling, 3/5</li>
-                    <li>Bossypants, Tina Fey, 1/5</li>
-                    <a href="#top">Back to top</a><br />
-                </ol>
-                <B id="history">Critical Theory / History:</B>
-                <ol>
-                    <li>Pedagogy of the Oppressed, Paulo Freire, 5/5</li>
-                    <li>The Communist Manifesto, Karl Marx, 5/5</li>
-                    <li>Are Prisons Obsolete?, Angela Y. Davis, 5/5</li>
-                    <li>Discipline and Punish: The Birth of the Prison, Michel Foucault, 5/5</li>
-                    <li>Blackshirts and Reds: Rational Fascism and the Overthrow of Communism, Michael Parenti, 5/5</li>
-                    <li>The New Jim Crow: Mass Incarceration in the Age of Colorblindness, Michelle Alexander, 5/5</li>
-                    <li>The Discourses, Niccol Machiavelli, 5/5</li>
-                    <li>The End of Policing, Alexo S. Vitale, 4/5</li>
-                    <li>Why I'm No Longer Talking to White People About Race, Reni Eddo-Lodge, 4/5</li>
-                    <li>Just Mercy: A Story of Justice and Redemption, Bryan Stevenson, 4/5</li>
-                    <li>A People's History of the United States, Howard Zinn, 4/5</li>
-                    <li>The Prince, Niccolo Machiavelli, 4/5</li>
-                    <li>Two Treatises of Government, John Locke, 4/5</li>
-                    <li>Leviathan, Thomas Hobbes, 4/5</li>
-                    <li>We Were Eight Years in Power: An American Tragedy, Ta-Nehisi Coates, 3/5</li>
-                    <li>Reflections on the Revolution in France, Edmund Burke, 3/5</li>
-                    <li>Nickel and Dimed: On (Not) Getting by in America, Barbara Ehrenreich, 3/5</li>
-                    <a href="#top">Back to top</a><br />
-                </ol>
-                <B id="poetry">Poetry:</B>
-                <ol>
-                    <li>korean mourning rituals, Erin Kong, 5/5</li>
-                    <li>No Body in Particular, Giovanna Lomanto, 5/5</li>
-                    <li>Howl and Other Poems, Allen Ginsberg, 5/5</li>
-                    <a href="#top">Back to top</a><br />
-                </ol>
-                <B id="technology">Technology / Science:</B>
-                <ol>
-                    <li>Bad Blood: Secrets and Lies in a Silicon Valley Startup, John Carreyrou, 5/5</li>
-                    <li>Winners Take All: The Elite Charade of Changing the World, Anand Giridharadas, 4/5</li>
-                    <li>The Last Lecture, Randy Pausch, 4/5</li>
-                    <li>Cracking the Coding Interview: 150 Programming Questions and Solutions, Gayle Laakmann McDowell, 4/5</li>
-                    <li>Why We Sleep: Unlocking the Power of Sleep and Dreams, Matthew Walker, 4/5</li>
-                    <li>Algorithms of Oppression: How Search Engines Reinforce Racism, Safiya Umoja Noble, 3/5</li>
-                    <li>Digital Minimalism: Choosing a Focused Life in a Noisy World, Cal Newport, 2/5</li>
-                    <li>Modern Romance, Aziz Ansari, 2/5</li>
-                    <li>Invisible Women: Exposing Data Bias in a World Designed for Men, Caroline Criado-Perez, 1/5</li>
-                    <a href="#top">Back to top</a><br />
-                </ol>
-                <B id="art history">Art History:</B>
-                <ol>
-                    <li>Staring: How We Look, Rosemarie Garland-Thomson, 5/5</li>
-                    <li>The Mirror of the Artist: Northern Renaissance Art (perspectives): First Edition, Craig Harbison, 4/5</li>
-                    <li>Re-Presenting Disability: Activism and Agency in the Museum, Richard Sandell, 4/5</li>
-                    <li>On Painting, Leon Battista Alberti, 3/5</li>
-                    <li>The Nude: A Study in Ideal Form, Kenneth  Clark, 3/5</li>
-                    <li>Painting and Experience in Fifteenth-Century Italy: A Primer in the Social History of Pictorial Style, Michael Baxandall, 3/5</li>
-                    <a href="#top">Back to top</a><br />
-                </ol>
-                <B id="fiction series">Fiction (Series):</B>
-                <ol>
-                    <li>Everlost (Skinjacker, #1), Neal Shusterman, 4/5</li>
-                    <li>Fablehaven (Fablehaven, #1), Brandon Mull, 4/5</li>
-                    <li>The Candy Shop War (The Candy Shop War #1), Brandon Mull, 4/5</li>
-                    <li>The Hobbit, or There and Back Again, J.R.R. Tolkien, 4/5</li>
-                    <li>The Giver (The Giver, #1), Lois Lowry, 4/5</li>
-                    <li>The Lightning Thief (Percy Jackson and the Olympians, #1), Rick Riordan, 4/5</li>
-                    <li>Twilight (Twilight, #1), Stephenie Meyer, 4/5</li>
-                    <li>The Hunger Games (The Hunger Games, #1), Suzanne Collins, 4/5</li>
-                    <li>The Never War (Pendragon, #3), D.J. MacHale, 4/5</li>
-                    <li>The Merchant of Death (Pendragon, #1), D.J. MacHale, 4/5</li>
-                    <li>The Lost City of Faar (Pendragon, #2), D.J. MacHale, 4/5</li>
-                    <li>Harry Potter and the Prisoner of Azkaban (Harry Potter, #3), J.K. Rowling, 4/5</li>
-                    <li>A Wrinkle in Time (Time Quintet, #1), Madeleine L'Engle, 4/5</li>
-                    <li>The Da Vinci Code (Robert Langdon, #2), Dan Brown, 4/5</li>
-                    <li>Keys to the Demon Prison (Fablehaven, #5), Brandon Mull, 3/5</li>
-                    <li>Secrets of the Dragon Sanctuary (Fablehaven, #4), Brandon Mull, 3/5</li>
-                    <li>Grip of the Shadow Plague (Fablehaven, #3), Brandon Mull, 3/5</li>
-                    <li>Rise of the Evening Star (Fablehaven, #2), Brandon Mull, 3/5</li>
-                    <li>The Maze Runner (The Maze Runner, #1), James Dashner, 3/5</li>
-                    <li>The Red Pyramid (The Kane Chronicles, #1), Rick Riordan, 3/5</li>
-                    <li>The Last Olympian (Percy Jackson and the Olympians, #5), Rick Riordan, 3/5</li>
-                    <li>The Titan's Curse (Percy Jackson and the Olympians, #3), Rick Riordan, 3/5</li>
-                    <li>The Battle of the Labyrinth (Percy Jackson and the Olympians, #4), Rick Riordan, 3/5</li>
-                    <li>The Sea of Monsters (Percy Jackson and the Olympians, #2), Rick Riordan, 3/5</li>
-                    <li>Artemis Fowl (Artemis Fowl, #1), Eoin Colfer, 3/5</li>
-                    <li>Inkheart (Inkworld, #1), Cornelia Funke, 3/5</li>
-                    <li>The City of Ember (Book of Ember, #1), Jeanne DuPrau, 3/5</li>
-                    <li>Holes (Holes, #1), Louis Sachar, 3/5</li>
-                    <li>The Lion, the Witch and the Wardrobe (Chronicles of Narnia, #1), C.S. Lewis, 3/5</li>
-                    <li>New Moon (Twilight, #2), Stephenie Meyer, 3/5</li>
-                    <li>Eclipse (Twilight, #3), Stephenie Meyer, 3/5</li>
-                    <li>Breaking Dawn (Twilight, #4), Stephenie Meyer, 3/5</li>
-                    <li>Catching Fire (The Hunger Games, #2), Suzanne Collins, 3/5</li>
-                    <li>Raven Rise (Pendragon, #9), D.J. MacHale, 3/5</li>
-                    <li>The Quillan Games (Pendragon, #7), D.J. MacHale, 3/5</li>
-                    <li>The Reality Bug (Pendragon, #4), D.J. MacHale, 3/5</li>
-                    <li>Black Water (Pendragon, #5), D.J. MacHale, 3/5</li>
-                    <li>The Soldiers of Halla (Pendragon, #10), D.J. MacHale, 3/5</li>
-                    <li>The Rivers of Zadaa (Pendragon, #6), D.J. MacHale, 3/5</li>
-                    <li>The Pilgrims of Rayne (Pendragon, #8), D.J. MacHale, 3/5</li>
-                    <li>Harry Potter and the Half-Blood Prince (Harry Potter, #6), J.K. Rowling, 3/5</li>
-                    <li>Harry Potter and the Chamber of Secrets (Harry Potter, #2), J.K. Rowling, 3/5</li>
-                    <li>Harry Potter and the Goblet of Fire (Harry Potter, #4), J.K. Rowling, 3/5</li>
-                    <li>Harry Potter and the Deathly Hallows (Harry Potter, #7), J.K. Rowling, 3/5</li>
-                    <li>Harry Potter and the Sorcerer's Stone (Harry Potter, #1), J.K. Rowling, 3/5</li>
-                    <li>A Game of Thrones (A Song of Ice and Fire, #1), George R.R. Martin, 3/5</li>
-                    <li>Eragon (The Inheritance Cycle, #1), Christopher Paolini, 2/5</li>
-                    <li>Stargirl (Stargirl, #1), Jerry Spinelli, 2/5</li>
-                    <li>Harry Potter and the Order of the Phoenix (Harry Potter, #5), J.K. Rowling, 2/5</li>
-                    <a href="#top">Back to top</a><br />
-                </ol>
-                <B id="fiction classic">Fiction (Classic):</B>
-                <ol>
-                    <li>The Complete Sherlock Holmes, Arthur Conan Doyle, 5/5</li>
-                    <li>The Picture of Dorian Gray, Oscar Wilde, 5/5</li>
-                    <li>Romeo and Juliet, William Shakespeare, 5/5</li>
-                    <li>1984, George Orwell, 5/5</li>
-                    <li>Death of a Salesman, Arthur  Miller, 4/5</li>
-                    <li>Fahrenheit 451, Ray Bradbury, 4/5</li>
-                    <li>To Kill a Mockingbird, Harper Lee, 4/5</li>
-                    <li>King Lear, William Shakespeare, 4/5</li>
-                    <li>Othello, William Shakespeare, 4/5</li>
-                    <li>Candide, Voltaire, 4/5</li>
-                    <li>Brave New World, Aldous Huxley, 4/5</li>
-                    <li>Dracula, Bram Stoker, 4/5</li>
-                    <li>The Stranger, Albert Camus, 4/5</li>
-                    <li>Animal Farm, George Orwell, 4/5</li>
-                    <li>Of Mice and Men, John Steinbeck, 3/5</li>
-                    <li>The Adventures of Tom Sawyer, Mark Twain, 3/5</li>
-                    <li>The Adventures of Huckleberry Finn, Mark Twain, 3/5</li>
-                    <li>The Sun Also Rises, Ernest Hemingway, 3/5</li>
-                    <li>The Strange Case of Dr. Jekyll and Mr. Hyde, Robert Louis Stevenson, 3/5</li>
-                    <li>Frankenstein: The 1818 Text, Mary Wollstonecraft Shelley, 3/5</li>
-                    <li>Macbeth, William Shakespeare, 3/5</li>
-                    <li>Hamlet, William Shakespeare, 3/5</li>
-                    <li>Brave New World / Brave New World Revisited, Aldous Huxley, 3/5</li>
-                    <li>The Pearl, John Steinbeck, 2/5</li>
-                    <li>A Tale of Two Cities, Charles Dickens, 2/5</li>
-                    <li>The Odessy, Homer, 2/5</li>
-                    <li>The Crucible, Arthur  Miller, 2/5</li>
-                    <li>The Taming of the Shrew, William Shakespeare, 2/5</li>
-                    <li>The Great Gatsby, F. Scott Fitzgerald, 2/5</li>
-                    <li>Walden, Henry David Thoreau, 2/5</li>
-                    <li>The Canterbury Tales, Geoffrey Chaucer, 2/5</li>
-                    <a href="#top">Back to top</a><br />
-                </ol>
-                <B id="fiction other">Fiction (Other):</B>
-                <ol>
-                    <li>Matilda, Roald Dahl, 5/5</li>
-                    <li>The House on Mango Street, Sandra Cisneros, 4/5</li>
-                    <li>The Book Thief, Markus Zusak, 4/5</li>
-                    <li>Elsewhere, Gabrielle Zevin, 4/5</li>
-                    <li>Bud, Not Buddy, Christopher Paul Curtis, 4/5</li>
-                    <li>Coraline, Neil Gaiman, 4/5</li>
-                    <li>Number the Stars, Lois Lowry, 4/5</li>
-                    <li>A Thousand Acres, Jane Smiley, 3/5</li>
-                    <li>The Glass Menagerie, Tennessee Williams, 3/5</li>
-                    <li>The Outsiders, S.E. Hinton, 3/5</li>
-                    <li>The Poisonwood Bible, Barbara Kingsolver, 2/5</li>
-                    <li>Tuck Everlasting, Natalie Babbitt, 2/5</li>
-                    <li>Anthem, Ayn Rand, 1/5</li>
-                    <li>Atlas Shrugged, Ayn Rand, 1/5</li>
-                    <a href="#top">Back to top</a><br />
-                </ol>
+            <button class="close-panel" id="closePanel">&times;</button>
         </div>
-    </body>
+        <div class="side-panel-content" id="panelContent"></div>
+    </div>
+
+    <div class="bottom-panel">
+        <div class="controls">
+            <label>Min connections: <select id="minConnections">
+                <option value="1">1+ (all)</option>
+                <option value="2">2+</option>
+                <option value="3" selected>3+</option>
+                <option value="5">5+</option>
+                <option value="10">10+</option>
+            </select></label>
+            <label>Link Distance: <input type="range" id="linkDistance" min="30" max="150" value="80"></label>
+            <label>Charge: <input type="range" id="charge" min="-300" max="-30" value="-120"></label>
+        </div>
+        <div class="legend">
+            <div class="legend-item" data-type="book"><div class="legend-color" style="background: #e879f9;"></div>Books</div>
+            <div class="legend-item" data-type="genre"><div class="legend-color" style="background: #38bdf8;"></div>Genres</div>
+            <div class="legend-item" data-type="topic"><div class="legend-color" style="background: #4ade80;"></div>Topics</div>
+        </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script>
+        // Book data
+        const booksData = [
+            {title: "A Court of Thorns and Roses", author: "Sarah J. Maas", genres: ["fiction", "novel", "fantasy", "romance"], topics: ["faerie", "relationships", "love", "worldbuilding"]},
+            {title: "Accelerate", author: "Gene Kim, Jez Humble, Nicole Forsgren", genres: ["nonfiction", "business"], topics: ["technology", "devops", "work", "teams"]},
+            {title: "Adventures of Amina al-Sirafi", author: "S.A. Chakraborty", genres: ["fiction", "novel", "fantasy", "historical-fiction"], topics: ["islam", "mythology", "motherhood", "pirates", "middle-east", "family"]},
+            {title: "Against Technoableism", author: "Ashley Shew", genres: ["nonfiction"], topics: ["disability", "technology", "ableism", "capitalism"]},
+            {title: "Algorithms of Oppression", author: "Safiya Noble", genres: ["nonfiction"], topics: ["technology", "racism", "algorithms", "search", "capitalism"]},
+            {title: "All About Love", author: "bell hooks", genres: ["nonfiction", "theory"], topics: ["love", "community", "death", "relationships", "spirituality", "empathy", "accountability"]},
+            {title: "All Boys Aren't Blue", author: "George M. Johnson", genres: ["nonfiction", "memoir"], topics: ["queerness", "race", "gender", "hope", "identity", "family"]},
+            {title: "American Gods", author: "Neil Gaiman", genres: ["fiction", "novel", "fantasy"], topics: ["mythology", "americana", "religion", "immigration"]},
+            {title: "An Immense World", author: "Ed Yong", genres: ["nonfiction", "science"], topics: ["nature", "animals", "perception", "biology", "observation"]},
+            {title: "Are Prisons Obsolete?", author: "Angela Davis", genres: ["nonfiction"], topics: ["abolition", "prison", "capitalism", "racism", "feminism", "history"]},
+            {title: "Are You My Mother?", author: "Alison Bechdel", genres: ["nonfiction", "memoir", "graphic-novel"], topics: ["motherhood", "family", "queerness", "therapy", "psychoanalysis"]},
+            {title: "Beach Read", author: "Emily Henry", genres: ["fiction", "novel", "romance"], topics: ["relationships", "writing", "love"]},
+            {title: "Because Internet", author: "Gretchen McCulloch", genres: ["nonfiction"], topics: ["linguistics", "language", "internet", "communication", "history"]},
+            {title: "Becoming Trader Joe", author: "Joe Coulombe", genres: ["nonfiction", "memoir", "business"], topics: ["retail", "california", "advertising", "food", "history"]},
+            {title: "Before We Were Trans", author: "Kit Heyam", genres: ["nonfiction", "history"], topics: ["queerness", "trans", "gender", "history", "non-western", "performance"]},
+            {title: "Big Swiss", author: "Jen Beagin", genres: ["fiction", "novel"], topics: ["queerness", "wlw", "relationships", "unreliable-narrator", "therapy"]},
+            {title: "Blackshirts & Reds", author: "Michael Parenti", genres: ["nonfiction", "history", "theory"], topics: ["fascism", "communism", "history", "propaganda", "marxism", "capitalism"]},
+            {title: "Blue Nights", author: "Joan Didion", genres: ["nonfiction", "memoir"], topics: ["motherhood", "mortality", "grief", "loss", "aging"]},
+            {title: "Bluets", author: "Maggie Nelson", genres: ["nonfiction", "poetry", "essays"], topics: ["color", "loneliness", "love", "heartbreak", "sex", "body", "observation"]},
+            {title: "Border and Rule", author: "Harsha Walia", genres: ["nonfiction", "theory"], topics: ["immigration", "capitalism", "white-supremacy", "colonialism", "borders", "labor", "race"]},
+            {title: "Born a Crime", author: "Trevor Noah", genres: ["nonfiction", "memoir"], topics: ["south-africa", "apartheid", "race", "motherhood", "community", "family"]},
+            {title: "Bossypants", author: "Tina Fey", genres: ["nonfiction", "memoir", "humor"], topics: ["comedy", "entertainment-industry"]},
+            {title: "Breakneck", author: "Dan Wang", genres: ["nonfiction", "politics"], topics: ["technology", "china", "infrastructure", "governance", "silicon-valley", "geopolitics", "capitalism"]},
+            {title: "Caliban and the Witch", author: "Silvia Federici", genres: ["nonfiction", "history", "theory"], topics: ["feminism", "capitalism", "marxism", "history", "labor", "colonialism", "witch-hunts"]},
+            {title: "Capitalism & Disability", author: "Marta Russell", genres: ["nonfiction", "theory"], topics: ["disability", "capitalism", "labor", "policy", "ableism"]},
+            {title: "Catalog of Unabashed Gratitude", author: "Ross Gay", genres: ["poetry"], topics: ["gratitude", "joy", "nature", "love"]},
+            {title: "Chip War", author: "Chris Miller", genres: ["nonfiction", "history"], topics: ["technology", "geopolitics", "china", "history", "capitalism", "infrastructure"]},
+            {title: "Circe", author: "Madeline Miller", genres: ["fiction", "novel", "mythology"], topics: ["greek-mythology", "feminism", "witchcraft", "motherhood", "power", "identity"]},
+            {title: "Crying in H Mart", author: "Michelle Zauner", genres: ["nonfiction", "memoir"], topics: ["grief", "motherhood", "korean-american", "asian-american", "food", "loss", "family", "identity"]},
+            {title: "Cultish", author: "Amanda Montell", genres: ["nonfiction"], topics: ["language", "cults", "psychology", "power"]},
+            {title: "Dancing at the Pity Party", author: "Tyler Feder", genres: ["nonfiction", "memoir", "graphic-novel"], topics: ["grief", "motherhood", "cancer", "loss", "death", "family"]},
+            {title: "Digital Minimalism", author: "Cal Newport", genres: ["nonfiction"], topics: ["technology", "productivity", "intention", "internet"]},
+            {title: "Disorientation", author: "Elaine Hsieh Chou", genres: ["fiction", "novel", "satire"], topics: ["asian-american", "academia", "identity", "race"]},
+            {title: "Dog Songs", author: "Mary Oliver", genres: ["poetry"], topics: ["animals", "dogs", "nature", "joy", "love"]},
+            {title: "Drive", author: "Daniel H. Pink", genres: ["nonfiction"], topics: ["motivation", "psychology", "work", "learning"]},
+            {title: "Elite Capture", author: "Olufemi Taiwo", genres: ["nonfiction", "theory"], topics: ["politics", "identity", "capitalism", "organizing"]},
+            {title: "Everything is Tuberculosis", author: "John Green", genres: ["nonfiction"], topics: ["disease", "public-health", "history", "grief", "loss", "scale"]},
+            {title: "Exhalation", author: "Ted Chiang", genres: ["fiction", "short-stories", "science-fiction"], topics: ["free-will", "philosophy", "technology", "humanity"]},
+            {title: "Flash Boys", author: "Michael Lewis", genres: ["nonfiction"], topics: ["finance", "technology", "wall-street", "capitalism"]},
+            {title: "Flowers for Algernon", author: "Daniel Keyes", genres: ["fiction", "novel", "science-fiction"], topics: ["disability", "intelligence", "empathy", "humanity"]},
+            {title: "Four Thousand Weeks", author: "Oliver Burkeman", genres: ["nonfiction"], topics: ["mortality", "meaning", "productivity", "philosophy", "time"]},
+            {title: "Freedom Is a Constant Struggle", author: "Angela Davis", genres: ["nonfiction", "essays"], topics: ["organizing", "abolition", "solidarity", "revolution", "hope", "community"]},
+            {title: "Fun Home", author: "Alison Bechdel", genres: ["nonfiction", "memoir", "graphic-novel"], topics: ["queerness", "family", "fatherhood", "literature", "death", "identity", "wlw"]},
+            {title: "Funny Story", author: "Emily Henry", genres: ["fiction", "novel", "romance"], topics: ["relationships"]},
+            {title: "Going Infinite", author: "Michael Lewis", genres: ["nonfiction"], topics: ["finance", "crypto", "silicon-valley", "fraud", "capitalism", "technology"]},
+            {title: "Gone Girl", author: "Gillian Flynn", genres: ["fiction", "novel", "thriller"], topics: ["relationships", "unreliable-narrator", "marriage", "gender"]},
+            {title: "Goodbye, Again", author: "Jonny Sun", genres: ["nonfiction", "essays", "illustrated"], topics: ["anxiety", "mental-health", "work", "loneliness"]},
+            {title: "Haruko/Love Poems", author: "June Jordan", genres: ["poetry"], topics: ["love", "heartbreak", "longing"]},
+            {title: "Heavy", author: "Kiese Laymon", genres: ["nonfiction", "memoir"], topics: ["race", "body", "eating-disorder", "gambling", "motherhood", "family", "writing"]},
+            {title: "How Europe Underdeveloped Africa", author: "Walter Rodney", genres: ["nonfiction", "history", "theory"], topics: ["colonialism", "imperialism", "racism", "capitalism", "africa", "history", "labor"]},
+            {title: "How to Change Your Mind", author: "Michael Pollan", genres: ["nonfiction", "science"], topics: ["psychedelics", "consciousness", "science", "history", "spirituality", "meaning"]},
+            {title: "How to Sit", author: "Thich Nhat Hanh", genres: ["nonfiction"], topics: ["meditation", "mindfulness", "buddhism", "spirituality", "philosophy"]},
+            {title: "How to Write an Autobiographical Novel", author: "Alexander Chee", genres: ["nonfiction", "essays", "memoir"], topics: ["queerness", "asian-american", "bay-area", "writing", "identity"]},
+            {title: "How We Get Free", author: "Keeanga-Yamahtta Taylor", genres: ["nonfiction", "interviews"], topics: ["organizing", "black-feminism", "coalition-building", "history", "solidarity"]},
+            {title: "I'm Glad My Mom Died", author: "Jennette McCurdy", genres: ["nonfiction", "memoir"], topics: ["abuse", "fame", "motherhood", "eating-disorder", "entertainment-industry", "family", "body"]},
+            {title: "In the Dream House", author: "Carmen Maria Machado", genres: ["nonfiction", "memoir"], topics: ["abuse", "queerness", "wlw", "trauma", "relationships", "gender"]},
+            {title: "Interaction of Color", author: "Josef Albers", genres: ["nonfiction", "art", "illustrated"], topics: ["color", "art", "perception", "design"]},
+            {title: "Invisible Women", author: "Caroline Criado-Perez", genres: ["nonfiction"], topics: ["gender", "data", "feminism"]},
+            {title: "Klimt and His Cat", author: "Berenice Capatti", genres: ["fiction", "childrens", "illustrated"], topics: ["art", "cats", "animals"]},
+            {title: "Know My Name", author: "Chanel Miller", genres: ["nonfiction", "memoir"], topics: ["sexual-assault", "trauma", "justice", "institutions", "art", "womanhood", "identity"]},
+            {title: "Koh-I-Noor", author: "William Dalrymple", genres: ["nonfiction", "history"], topics: ["colonialism", "india", "british-empire", "history", "imperialism"]},
+            {title: "korean mourning rituals", author: "Erin Kong", genres: ["poetry"], topics: ["grief", "korean-american", "loss", "asian-american"]},
+            {title: "Little Weirds", author: "Jenny Slate", genres: ["nonfiction", "essays", "memoir"], topics: ["divorce", "identity", "loneliness", "relationships"]},
+            {title: "Magritte", author: "Jacques Meuris", genres: ["nonfiction", "art", "illustrated"], topics: ["art", "surrealism", "painting", "perception"]},
+            {title: "Material World", author: "Ed Conway", genres: ["nonfiction"], topics: ["infrastructure", "materials", "history", "economics", "capitalism", "geopolitics"]},
+            {title: "Maybe You Should Talk to Someone", author: "Lori Gottlieb", genres: ["nonfiction", "memoir"], topics: ["therapy", "mental-health", "psychology", "vulnerability", "relationships"]},
+            {title: "Men Without Women", author: "Haruki Murakami", genres: ["fiction", "short-stories"], topics: ["relationships", "japanese", "gender", "loneliness"]},
+            {title: "Money", author: "Jacob Goldstein", genres: ["nonfiction", "history"], topics: ["finance", "history", "economics", "capitalism"]},
+            {title: "no body in particular", author: "Giovanna Lomanto", genres: ["poetry"], topics: ["vulnerability", "body"]},
+            {title: "No Filter", author: "Sarah Frier", genres: ["nonfiction"], topics: ["technology", "social-media", "silicon-valley", "capitalism", "fame"]},
+            {title: "Novelty", author: "Mic Ting", genres: ["poetry"], topics: ["asian-american", "berkeley", "bay-area", "identity"]},
+            {title: "Oranges", author: "John McPhee", genres: ["nonfiction"], topics: ["food", "agriculture", "history", "california"]},
+            {title: "Ordinary Girls", author: "Jaquira Diaz", genres: ["nonfiction", "memoir"], topics: ["family", "womanhood", "latina", "mental-health", "childhood", "queerness"]},
+            {title: "Pedagogy of the Oppressed", author: "Paulo Freire", genres: ["nonfiction", "theory"], topics: ["education", "power", "empathy", "liberation", "organizing"]},
+            {title: "Permanent Record", author: "Edward Snowden", genres: ["nonfiction", "memoir"], topics: ["surveillance", "privacy", "technology", "whistleblowing", "government"]},
+            {title: "Range", author: "David Epstein", genres: ["nonfiction"], topics: ["learning", "career", "psychology", "education"]},
+            {title: "README.txt", author: "Chelsea Manning", genres: ["nonfiction", "memoir"], topics: ["trans", "whistleblowing", "military", "prison", "gender", "abolition", "queerness"]},
+            {title: "Red, White & Royal Blue", author: "Casey McQuiston", genres: ["fiction", "novel", "romance"], topics: ["queerness", "mlm", "politics", "love", "relationships"]},
+            {title: "Rescue Cats", author: "Traer Scott", genres: ["nonfiction", "illustrated"], topics: ["animals", "cats"]},
+            {title: "Shiver", author: "Junji Ito", genres: ["fiction", "short-stories", "manga", "horror"], topics: ["horror", "japanese", "body"]},
+            {title: "Sink", author: "Joseph Earl Thomas", genres: ["nonfiction", "memoir"], topics: ["race", "childhood", "poverty", "family"]},
+            {title: "Somebody's Daughter", author: "Ashley Ford", genres: ["nonfiction", "memoir"], topics: ["motherhood", "family", "race", "womanhood", "childhood"]},
+            {title: "Stay True", author: "Hua Hsu", genres: ["nonfiction", "memoir"], topics: ["friendship", "grief", "loss", "asian-american", "berkeley", "bay-area", "identity", "music"]},
+            {title: "Surely You're Joking, Mr. Feynman!", author: "Richard Feynman", genres: ["nonfiction", "memoir"], topics: ["physics", "science"]},
+            {title: "Teach Yourself to Dream", author: "David Fontana", genres: ["nonfiction", "illustrated"], topics: ["dreams", "psychology", "spirituality", "history"]},
+            {title: "Ten Steps to Nanette", author: "Hannah Gadsby", genres: ["nonfiction", "memoir", "humor"], topics: ["queerness", "comedy", "fame", "autism", "trauma", "identity"]},
+            {title: "The Backyard Bird Chronicles", author: "Amy Tan", genres: ["nonfiction", "memoir", "illustrated"], topics: ["nature", "animals", "observation", "bay-area", "asian-american", "mortality", "pandemic", "art", "joy"]},
+            {title: "The City of Brass", author: "S.A. Chakraborty", genres: ["fiction", "novel", "fantasy"], topics: ["islam", "mythology", "middle-east", "worldbuilding"]},
+            {title: "The Color of Law", author: "Richard Rothstein", genres: ["nonfiction", "history"], topics: ["segregation", "housing", "racism", "policy", "history", "race"]},
+            {title: "The Communist Manifesto", author: "Friedrich Engels and Karl Marx", genres: ["nonfiction", "theory"], topics: ["communism", "marxism", "capitalism", "class", "labor", "history"]},
+            {title: "The Creative Act", author: "Rick Rubin", genres: ["nonfiction"], topics: ["creativity", "art", "philosophy", "spirituality", "meaning"]},
+            {title: "The Elements of Eloquence", author: "Mark Forsyth", genres: ["nonfiction"], topics: ["language", "writing", "rhetoric"]},
+            {title: "The End of Policing", author: "Alex Vitale", genres: ["nonfiction"], topics: ["abolition", "policing", "capitalism", "colonialism", "racism"]},
+            {title: "The Fire Next Time", author: "James Baldwin", genres: ["nonfiction", "essays"], topics: ["race", "fear", "power", "spirituality", "love", "empathy", "hope"]},
+            {title: "The Idea Factory", author: "Jon Gertner", genres: ["nonfiction", "history"], topics: ["technology", "innovation", "silicon-valley", "capitalism", "history"]},
+            {title: "The Lost City of Faar", author: "D.J. MacHale", genres: ["fiction", "novel", "ya", "fantasy"], topics: ["childhood-reread", "adventure"]},
+            {title: "The Love Poems of Rumi", author: "Rumi", genres: ["poetry"], topics: ["love", "spirituality", "islam", "persian"]},
+            {title: "The Merchant of Death", author: "D.J. MacHale", genres: ["fiction", "novel", "ya", "fantasy"], topics: ["childhood-reread", "adventure"]},
+            {title: "The New Jim Crow", author: "Michelle Alexander", genres: ["nonfiction"], topics: ["incarceration", "racism", "history", "policy", "abolition"]},
+            {title: "The New Wine Rules", author: "Jon Bonne", genres: ["nonfiction"], topics: ["wine", "food", "learning"]},
+            {title: "The Omnivore's Dilemma", author: "Michael Pollan", genres: ["nonfiction"], topics: ["food", "agriculture", "environment", "capitalism"]},
+            {title: "The Queer Art of Failure", author: "J. Halberstam", genres: ["nonfiction", "theory"], topics: ["queerness", "capitalism", "failure", "art", "gender"]},
+            {title: "The Song of Achilles", author: "Madeline Miller", genres: ["fiction", "novel", "mythology", "romance"], topics: ["greek-mythology", "queerness", "mlm", "love", "war", "mortality"]},
+            {title: "The Viral Underclass", author: "Steven Thrasher", genres: ["nonfiction"], topics: ["disease", "capitalism", "policing", "ableism", "public-health", "organizing", "labor"]},
+            {title: "They Both Die at the End", author: "Adam Silvera", genres: ["fiction", "novel", "ya"], topics: ["mortality", "queerness", "mlm", "death"]},
+            {title: "Thinking in Bets", author: "Annie Duke", genres: ["nonfiction"], topics: ["decision-making", "psychology", "probability", "rationality"]},
+            {title: "This Is Your Mind on Plants", author: "Michael Pollan", genres: ["nonfiction"], topics: ["drugs", "plants", "history", "journalism"]},
+            {title: "Tomorrow, and Tomorrow, and Tomorrow", author: "Gabrielle Zevin", genres: ["fiction", "novel"], topics: ["video-games", "friendship", "technology", "creativity", "loss", "relationships"]},
+            {title: "Trick Mirror", author: "Jia Tolentino", genres: ["nonfiction", "essays"], topics: ["internet", "identity", "feminism", "culture", "performance"]},
+            {title: "Twenty Love Poems and a Song of Despair", author: "Pablo Neruda", genres: ["poetry"], topics: ["love", "heartbreak", "spanish", "longing"]},
+            {title: "Twilight", author: "Stephenie Meyer", genres: ["fiction", "novel", "ya", "romance", "fantasy"], topics: ["vampires", "childhood-reread", "relationships"]},
+            {title: "Uncanny Valley", author: "Anna Wiener", genres: ["nonfiction", "memoir"], topics: ["technology", "silicon-valley", "sexism", "san-francisco", "bay-area", "capitalism"]},
+            {title: "We Do This 'Til We Free Us", author: "Mariame Kaba", genres: ["nonfiction", "essays"], topics: ["abolition", "organizing", "accountability", "hope", "community", "solidarity"]},
+            {title: "What I Talk About When I Talk About Running", author: "Haruki Murakami", genres: ["nonfiction", "memoir"], topics: ["running", "writing", "discipline", "japanese", "body"]},
+            {title: "When Breath Becomes Air", author: "Paul Kalanithi", genres: ["nonfiction", "memoir"], topics: ["mortality", "medicine", "meaning", "death"]},
+            {title: "When", author: "Daniel H. Pink", genres: ["nonfiction", "science"], topics: ["productivity", "psychology", "time", "decision-making"]},
+            {title: "Why Fish Don't Exist", author: "Lulu Miller", genres: ["nonfiction", "memoir"], topics: ["science", "eugenics", "taxonomy", "meaning"]},
+            {title: "Why I'm No Longer Talking to White People about Race", author: "Reni Eddo-Lodge", genres: ["nonfiction"], topics: ["race", "british", "south-asian", "mixed-race", "history"]},
+            {title: "Why We Sleep", author: "Matthew Walker", genres: ["nonfiction", "science"], topics: ["sleep", "health", "neuroscience", "body"]},
+            {title: "Winners Take All", author: "Anand Giridharadas", genres: ["nonfiction"], topics: ["philanthropy", "capitalism", "power", "silicon-valley", "inequality"]},
+            {title: "Women, Race, & Class", author: "Angela Y. Davis", genres: ["nonfiction", "history"], topics: ["feminism", "race", "class", "history", "labor", "womanhood"]},
+            {title: "Yellowface", author: "R.F. Kuang", genres: ["fiction", "novel", "satire"], topics: ["asian-american", "race", "publishing", "unreliable-narrator", "identity"]},
+            {title: "Yolk", author: "Mary H.K. Choi", genres: ["fiction", "novel"], topics: ["asian-american", "korean-american", "eating-disorder", "sisters", "family", "new-york", "body"]},
+            {title: "You're Not Listening", author: "Kate Murphy", genres: ["nonfiction"], topics: ["communication", "relationships", "psychology", "empathy"]}
+        ];
+
+        // State
+        let selectedNode = null;
+        let searchQuery = '';
+        let minConnections = 3;
+        let hiddenTypes = new Set();
+
+        // Build all nodes and links (unfiltered)
+        const allNodes = [];
+        const allLinks = [];
+        const nodeMap = new Map();
+
+        // Collect all genres and topics
+        const allGenres = new Set();
+        const allTopics = new Set();
+
+        booksData.forEach(book => {
+            book.genres.forEach(g => allGenres.add(g));
+            book.topics.forEach(t => allTopics.add(t));
+        });
+
+        // Create genre nodes
+        allGenres.forEach(genre => {
+            const id = `genre-${genre}`;
+            const node = { id, label: genre, type: 'genre', count: 0 };
+            allNodes.push(node);
+            nodeMap.set(id, node);
+        });
+
+        // Create topic nodes
+        allTopics.forEach(topic => {
+            const id = `topic-${topic}`;
+            const node = { id, label: topic, type: 'topic', count: 0 };
+            allNodes.push(node);
+            nodeMap.set(id, node);
+        });
+
+        // Create book nodes and links
+        booksData.forEach((book, i) => {
+            const id = `book-${i}`;
+            const node = {
+                id,
+                label: book.title,
+                type: 'book',
+                author: book.author,
+                genres: book.genres,
+                topics: book.topics
+            };
+            allNodes.push(node);
+            nodeMap.set(id, node);
+
+            // Link to genres
+            book.genres.forEach(genre => {
+                const genreId = `genre-${genre}`;
+                allLinks.push({ source: id, target: genreId });
+                nodeMap.get(genreId).count++;
+            });
+
+            // Link to topics
+            book.topics.forEach(topic => {
+                const topicId = `topic-${topic}`;
+                allLinks.push({ source: id, target: topicId });
+                nodeMap.get(topicId).count++;
+            });
+        });
+
+        // Filter nodes based on settings
+        function getFilteredData() {
+            const filteredNodes = allNodes.filter(n => {
+                if (hiddenTypes.has(n.type)) return false;
+                if (n.type === 'book') return true;
+                return n.count >= minConnections;
+            });
+
+            const nodeIds = new Set(filteredNodes.map(n => n.id));
+            const filteredLinks = allLinks.filter(l => {
+                const sourceId = typeof l.source === 'object' ? l.source.id : l.source;
+                const targetId = typeof l.target === 'object' ? l.target.id : l.target;
+                return nodeIds.has(sourceId) && nodeIds.has(targetId);
+            });
+
+            return { nodes: filteredNodes, links: filteredLinks };
+        }
+
+        // Set up the simulation
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+
+        const svg = d3.select("#graph")
+            .append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        const g = svg.append("g");
+
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
+
+        svg.call(zoom);
+
+        // Color scale
+        const colorScale = {
+            'book': '#e879f9',
+            'genre': '#38bdf8',
+            'topic': '#4ade80'
+        };
+
+        // Size scale for nodes
+        const sizeScale = (node) => {
+            if (node.type === 'book') return 6;
+            return Math.max(4, Math.min(16, 4 + node.count * 0.8));
+        };
+
+        // Initialize graph elements
+        let linkGroup = g.append("g").attr("class", "links");
+        let nodeGroup = g.append("g").attr("class", "nodes");
+        let labelGroup = g.append("g").attr("class", "labels");
+
+        let simulation, link, node, labels;
+        let currentNodes = [], currentLinks = [];
+
+        function updateGraph() {
+            const data = getFilteredData();
+
+            // Deep copy nodes to avoid mutation issues
+            currentNodes = data.nodes.map(n => ({...n}));
+            currentLinks = data.links.map(l => ({
+                source: typeof l.source === 'object' ? l.source.id : l.source,
+                target: typeof l.target === 'object' ? l.target.id : l.target
+            }));
+
+            // Update links
+            link = linkGroup.selectAll("line")
+                .data(currentLinks, d => `${d.source}-${d.target}`)
+                .join("line")
+                .attr("stroke", "#444")
+                .attr("stroke-opacity", 0.3)
+                .attr("stroke-width", 0.5);
+
+            // Update nodes
+            node = nodeGroup.selectAll("circle")
+                .data(currentNodes, d => d.id)
+                .join("circle")
+                .attr("r", d => sizeScale(d))
+                .attr("fill", d => colorScale[d.type])
+                .attr("stroke", "#fff")
+                .attr("stroke-width", 0.5)
+                .attr("stroke-opacity", 0.3)
+                .style("cursor", "pointer")
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended))
+                .on("mouseover", handleMouseOver)
+                .on("mouseout", handleMouseOut)
+                .on("click", handleClick);
+
+            // Update labels
+            labels = labelGroup.selectAll("text")
+                .data(currentNodes.filter(d => d.type !== 'book' && d.count >= 5), d => d.id)
+                .join("text")
+                .text(d => d.label)
+                .attr("font-size", 10)
+                .attr("fill", "#888")
+                .attr("text-anchor", "middle")
+                .attr("dy", d => sizeScale(d) + 12)
+                .style("pointer-events", "none");
+
+            // Restart simulation
+            if (simulation) simulation.stop();
+
+            simulation = d3.forceSimulation(currentNodes)
+                .force("link", d3.forceLink(currentLinks).id(d => d.id).distance(80))
+                .force("charge", d3.forceManyBody().strength(-120))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .force("collision", d3.forceCollide().radius(d => sizeScale(d) + 2))
+                .on("tick", ticked);
+
+            // Reapply selection/search highlighting
+            applyHighlighting();
+        }
+
+        function ticked() {
+            link
+                .attr("x1", d => d.source.x)
+                .attr("y1", d => d.source.y)
+                .attr("x2", d => d.target.x)
+                .attr("y2", d => d.target.y);
+
+            node
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y);
+
+            labels
+                .attr("x", d => d.x)
+                .attr("y", d => d.y);
+        }
+
+        // Tooltip
+        const tooltip = d3.select("#tooltip");
+
+        function handleMouseOver(event, d) {
+            let content = '';
+            if (d.type === 'book') {
+                content = `<div class="title">${d.label}</div>`;
+                if (d.author) content += `<div class="author">${d.author}</div>`;
+            } else {
+                content = `<div class="title">${d.label}</div>`;
+                content += `<div class="type">${d.type}</div>`;
+                content += `<div style="color: #aaa; margin-top: 4px;">${d.count} book${d.count !== 1 ? 's' : ''}</div>`;
+            }
+
+            tooltip.html(content)
+                .style("left", (event.pageX + 15) + "px")
+                .style("top", (event.pageY - 15) + "px")
+                .style("opacity", 1);
+        }
+
+        function handleMouseOut() {
+            tooltip.style("opacity", 0);
+        }
+
+        function handleClick(event, d) {
+            event.stopPropagation();
+            selectedNode = d;
+            searchQuery = '';
+            d3.select("#search").property("value", "");
+            showSidePanel(d);
+            applyHighlighting();
+        }
+
+        function applyHighlighting() {
+            if (!node) return;
+
+            let highlightIds = new Set();
+            let primaryIds = new Set();
+
+            if (selectedNode) {
+                primaryIds.add(selectedNode.id);
+                currentLinks.forEach(l => {
+                    const sourceId = typeof l.source === 'object' ? l.source.id : l.source;
+                    const targetId = typeof l.target === 'object' ? l.target.id : l.target;
+                    if (sourceId === selectedNode.id) highlightIds.add(targetId);
+                    if (targetId === selectedNode.id) highlightIds.add(sourceId);
+                });
+            } else if (searchQuery) {
+                currentNodes.forEach(n => {
+                    if (n.label.toLowerCase().includes(searchQuery) ||
+                        (n.author && n.author.toLowerCase().includes(searchQuery))) {
+                        primaryIds.add(n.id);
+                    }
+                });
+                currentLinks.forEach(l => {
+                    const sourceId = typeof l.source === 'object' ? l.source.id : l.source;
+                    const targetId = typeof l.target === 'object' ? l.target.id : l.target;
+                    if (primaryIds.has(sourceId)) highlightIds.add(targetId);
+                    if (primaryIds.has(targetId)) highlightIds.add(sourceId);
+                });
+            }
+
+            if (primaryIds.size > 0 || highlightIds.size > 0) {
+                node.attr("opacity", n => primaryIds.has(n.id) || highlightIds.has(n.id) ? 1 : 0.1);
+                link.attr("stroke-opacity", l => {
+                    const sourceId = typeof l.source === 'object' ? l.source.id : l.source;
+                    const targetId = typeof l.target === 'object' ? l.target.id : l.target;
+                    return primaryIds.has(sourceId) || primaryIds.has(targetId) ? 0.7 : 0.03;
+                });
+            } else {
+                node.attr("opacity", 1);
+                link.attr("stroke-opacity", 0.3);
+            }
+        }
+
+        function clearSelection() {
+            selectedNode = null;
+            searchQuery = '';
+            d3.select("#search").property("value", "");
+            d3.select("#sidePanel").classed("open", false);
+            applyHighlighting();
+        }
+
+        // Side panel
+        function showSidePanel(d) {
+            const panel = d3.select("#sidePanel");
+            const title = d3.select("#panelTitle");
+            const badge = d3.select("#panelBadge");
+            const content = d3.select("#panelContent");
+
+            title.text(d.label);
+            badge.attr("class", `type-badge ${d.type}`).text(d.type);
+
+            let html = '';
+
+            if (d.type === 'book') {
+                if (d.author) {
+                    html += `<div class="book-meta"><div>${d.author}</div></div>`;
+                }
+
+                html += `<div class="side-panel-section"><h3>Genres</h3><div class="tag-list">`;
+                d.genres.forEach(g => {
+                    html += `<span class="tag genre" data-id="genre-${g}">${g}</span>`;
+                });
+                html += `</div></div>`;
+
+                html += `<div class="side-panel-section"><h3>Topics</h3><div class="tag-list">`;
+                d.topics.forEach(t => {
+                    html += `<span class="tag topic" data-id="topic-${t}">${t}</span>`;
+                });
+                html += `</div></div>`;
+            } else {
+                // Genre or topic - show books
+                const connectedBooks = [];
+                allLinks.forEach(l => {
+                    const sourceId = typeof l.source === 'object' ? l.source.id : l.source;
+                    const targetId = typeof l.target === 'object' ? l.target.id : l.target;
+                    if (targetId === d.id) {
+                        const bookNode = nodeMap.get(sourceId);
+                        if (bookNode) connectedBooks.push(bookNode);
+                    }
+                });
+
+                // Sort alphabetically by title
+                connectedBooks.sort((a, b) => a.label.localeCompare(b.label));
+
+                html += `<div class="side-panel-section"><h3>Books (${connectedBooks.length})</h3><ul class="book-list">`;
+                connectedBooks.forEach(book => {
+                    html += `<li>`;
+                    html += `<div>${book.label}</div>`;
+                    if (book.author) html += `<div class="author">${book.author}</div>`;
+                    html += `</li>`;
+                });
+                html += `</ul></div>`;
+            }
+
+            content.html(html);
+
+            // Add click handlers for tags
+            content.selectAll(".tag").on("click", function() {
+                const tagId = d3.select(this).attr("data-id");
+                const tagNode = nodeMap.get(tagId);
+                if (tagNode) {
+                    selectedNode = tagNode;
+                    showSidePanel(tagNode);
+                    applyHighlighting();
+                }
+            });
+
+            panel.classed("open", true);
+        }
+
+        // Drag functions
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // Event handlers
+        d3.select("#linkDistance").on("input", function() {
+            simulation.force("link").distance(+this.value);
+            simulation.alpha(0.3).restart();
+        });
+
+        d3.select("#charge").on("input", function() {
+            simulation.force("charge").strength(+this.value);
+            simulation.alpha(0.3).restart();
+        });
+
+        d3.select("#minConnections").on("change", function() {
+            minConnections = +this.value;
+            updateGraph();
+        });
+
+        d3.select("#search").on("input", function() {
+            searchQuery = this.value.toLowerCase();
+            selectedNode = null;
+            d3.select("#sidePanel").classed("open", false);
+            applyHighlighting();
+        });
+
+        d3.select("#clearSelection").on("click", clearSelection);
+        d3.select("#closePanel").on("click", clearSelection);
+
+        // Legend toggle
+        d3.selectAll(".legend-item").on("click", function() {
+            const type = d3.select(this).attr("data-type");
+            if (type === 'book') return; // Can't hide books
+
+            if (hiddenTypes.has(type)) {
+                hiddenTypes.delete(type);
+                d3.select(this).classed("disabled", false);
+            } else {
+                hiddenTypes.add(type);
+                d3.select(this).classed("disabled", true);
+            }
+            updateGraph();
+        });
+
+        // Click on background to clear
+        svg.on("click", () => {
+            clearSelection();
+        });
+
+        // Initial render
+        updateGraph();
+        svg.call(zoom.transform, d3.zoomIdentity.translate(0, 60).scale(0.9));
+    </script>
+</body>
 </html>
