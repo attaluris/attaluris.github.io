@@ -10,10 +10,10 @@
     <body>
         <div class="wrapper">
             <div class="intro">
-                <img src="./assets/profile-five.jpg" alt="Sritej Attaluri" width="150" height="150" id="profile" />
+                <img src="./assets/profile-five.jpg" alt="Sritej Attaluri" width="150" height="150" id="profile" onclick="openModal()" style="cursor: pointer;" />
                 <div class="intro-text">
                     <h1><b>Sritej Attaluri</b></h1>
-                    <p class="tagline">perpetual optimist building software to help people be more curious</p>
+                    <p class="tagline">radical optimist building software to help people be more curious</p>
                 </div>
             </div>
 
@@ -52,7 +52,7 @@
             </section>
 
             <section>
-                <h2>Assorted Research</h2>
+                <h2>Selected Research</h2>
                 <ul class="research-list">
                     <li><span class="title"><a href="https://colocatedeventseu2023.sched.com/event/1Jo6L">Cilium in Practice: Building Data Sandboxes at Bloomberg</a></span> <span class="venue">KubeCon Europe 2023</span></li>
                     <li><span class="title"><a href="https://www.md4sg.com/">Proposing Safeguards for Governmentally-Regulated Risk Assessment Mechanisms</a></span> <span class="venue">MD4SG 2020</span></li>
@@ -61,7 +61,7 @@
             </section>
 
             <section>
-                <h2>Assorted Writing</h2>
+                <h2>Selected Writing</h2>
                 <ul class="writing-list">
                     <li><span class="date">2025 Dec</span> <a href="https://hapsriness.substack.com/p/a-love-letter-to-birding">a love letter to birding</a></li>
                     <li><span class="date">2025 Oct</span> <a href="https://hapsriness.substack.com/p/a-love-letter-to-the-greek-theatre">a love letter to the greek theatre</a></li>
@@ -86,5 +86,104 @@
                 <a href="mailto:sritej@gmail.com">sritej@gmail.com</a>
             </div>
         </div>
+
+        <div id="imageModal" class="modal" onclick="closeModal()">
+            <span class="modal-close">&times;</span>
+            <img src="./assets/profile-five.jpg" alt="Sritej Attaluri" class="modal-content" onclick="event.stopPropagation()">
+        </div>
+
+        <style>
+            .modal {
+                display: flex;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.9);
+                justify-content: center;
+                align-items: center;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.4s ease, visibility 0.4s ease;
+            }
+            .modal.active {
+                opacity: 1;
+                visibility: visible;
+            }
+            .modal-content {
+                position: fixed;
+                border-radius: 8px;
+                transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .modal-close {
+                position: absolute;
+                top: 20px;
+                right: 30px;
+                color: white;
+                font-size: 40px;
+                font-weight: bold;
+                cursor: pointer;
+                opacity: 0;
+                transition: opacity 0.3s ease, color 0.2s ease;
+            }
+            .modal.active .modal-close {
+                opacity: 1;
+            }
+            .modal-close:hover {
+                color: #ccc;
+            }
+        </style>
+
+        <script>
+            function openModal() {
+                var thumb = document.getElementById('profile');
+                var modal = document.getElementById('imageModal');
+                var modalImg = modal.querySelector('.modal-content');
+                var rect = thumb.getBoundingClientRect();
+
+                modalImg.style.transition = 'none';
+                modalImg.style.left = rect.left + 'px';
+                modalImg.style.top = rect.top + 'px';
+                modalImg.style.width = rect.width + 'px';
+                modalImg.style.height = rect.height + 'px';
+
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+
+                requestAnimationFrame(function() {
+                    requestAnimationFrame(function() {
+                        modalImg.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+                        var maxW = window.innerWidth * 0.9;
+                        var maxH = window.innerHeight * 0.9;
+                        var scale = Math.min(maxW / rect.width, maxH / rect.height, 3);
+                        var finalW = rect.width * scale;
+                        var finalH = rect.height * scale;
+                        modalImg.style.left = (window.innerWidth - finalW) / 2 + 'px';
+                        modalImg.style.top = (window.innerHeight - finalH) / 2 + 'px';
+                        modalImg.style.width = finalW + 'px';
+                        modalImg.style.height = finalH + 'px';
+                    });
+                });
+            }
+            function closeModal() {
+                var thumb = document.getElementById('profile');
+                var modal = document.getElementById('imageModal');
+                var modalImg = modal.querySelector('.modal-content');
+                var rect = thumb.getBoundingClientRect();
+
+                modalImg.style.left = rect.left + 'px';
+                modalImg.style.top = rect.top + 'px';
+                modalImg.style.width = rect.width + 'px';
+                modalImg.style.height = rect.height + 'px';
+
+                modal.classList.remove('active');
+                document.body.style.overflow = 'auto';
+            }
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') closeModal();
+            });
+        </script>
     </body>
 </html>
