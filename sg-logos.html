@@ -1,0 +1,1651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saint Germain Physical Therapy — Logo Exploration</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Serif+Display:ital@0;1&family=DM+Serif+Text:ital@0;1&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Raleway:wght@100;200;300;400;500;600;700;800;900&family=Outfit:wght@100;200;300;400;500;600;700;800;900&family=Source+Sans+3:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;0,6..96,700;0,6..96,800;0,6..96,900;1,6..96,400;1,6..96,500&family=Josefin+Sans:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0e0f11;
+  --bg-card: #16181c;
+  --bg-card-hover: #1c1f24;
+  --border: #2a2d35;
+  --border-hover: #3d4250;
+  --text: #c8cad0;
+  --text-dim: #6b6f7a;
+  --text-bright: #eaecf0;
+  --accent: #b08d57;
+  --accent-dim: rgba(176, 141, 87, 0.15);
+  --navy: #1a2744;
+  --navy-light: #2d4470;
+  --gold: #c9a84c;
+  --gold-light: #e4cc7a;
+  --teal: #2a8a7a;
+  --teal-light: #3bb5a0;
+  --cream: #f5ede0;
+  --forest: #2d5a3d;
+  --forest-light: #3d7a52;
+  --stone: #d4cbb8;
+  --slate: #4a6080;
+  --slate-light: #6888aa;
+  --coral: #d47a6a;
+  --charcoal: #2d3035;
+  --sage: #7a9a7a;
+  --sage-light: #9abf9a;
+  --radius: 8px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.3);
+  --shadow-hover: 0 12px 48px rgba(0,0,0,0.5);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Source Sans 3', sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── Grain overlay ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Header ── */
+.page-header {
+  padding: 60px 48px 40px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.page-header::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(176,141,87,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+.header-eyebrow {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+  opacity: 0;
+  animation: fadeUp 0.6s ease forwards 0.2s;
+}
+.header-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 400;
+  color: var(--text-bright);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  opacity: 0;
+  animation: fadeUp 0.6s ease forwards 0.35s;
+}
+.header-title em {
+  font-style: italic;
+  color: var(--accent);
+}
+.header-sub {
+  margin-top: 12px;
+  font-size: 15px;
+  color: var(--text-dim);
+  max-width: 600px;
+  opacity: 0;
+  animation: fadeUp 0.6s ease forwards 0.5s;
+}
+
+/* ── Navigation ── */
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(14,15,17,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards 0.6s;
+}
+.nav-link {
+  display: block;
+  padding: 16px 24px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: color 0.25s, border-color 0.25s;
+}
+.nav-link:hover, .nav-link.active {
+  color: var(--text-bright);
+  border-bottom-color: var(--accent);
+}
+
+/* ── Toggle controls ── */
+.view-controls {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 7px 16px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.toggle-btn:hover { border-color: var(--accent); color: var(--text); }
+.toggle-btn.active { background: var(--accent); border-color: var(--accent); color: #0e0f11; }
+
+/* ── Sections ── */
+.section {
+  padding: 64px 48px;
+}
+.section-label {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text-bright);
+  margin-bottom: 40px;
+  letter-spacing: -0.01em;
+}
+
+/* ── Reference Panel ── */
+.reference-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.reference-toggle {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  color: var(--text-bright);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.reference-toggle svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.3s;
+  color: var(--accent);
+}
+.reference-toggle.open svg { transform: rotate(180deg); }
+.reference-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.reference-body.open { max-height: 3000px; }
+.reference-inner {
+  padding: 0 28px 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+.ref-card {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 20px;
+}
+.ref-card h4 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.ref-card ul {
+  list-style: none;
+}
+.ref-card li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.ref-card li::before {
+  content: '◇';
+  position: absolute;
+  left: 0;
+  color: var(--border-hover);
+  font-size: 10px;
+  top: 2px;
+}
+
+/* ── Logo Grid ── */
+.logo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+.logo-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.35s;
+  opacity: 0;
+  animation: cardReveal 0.6s ease forwards;
+}
+.logo-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--border-hover);
+}
+.logo-card.light-preview .mark-area {
+  background: #ffffff;
+}
+.mark-area {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.4s;
+}
+.card-info {
+  padding: 16px 20px;
+}
+.card-info h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-bright);
+  margin-bottom: 4px;
+}
+.card-info p {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.5;
+}
+.card-tags {
+  display: flex;
+  gap: 6px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+.tag {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* ══════════════════════════════════════════════
+   LETTERMARK DESIGNS
+   ══════════════════════════════════════════════ */
+
+/* 1 — Ligature */
+.mark-ligature {
+  font-family: 'Playfair Display', serif;
+  font-size: 96px;
+  font-weight: 400;
+  color: var(--text-bright);
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  line-height: 1;
+}
+.mark-ligature .letter-s {
+  position: relative;
+  z-index: 2;
+}
+.mark-ligature .letter-g {
+  margin-left: -22px;
+  position: relative;
+  z-index: 1;
+  opacity: 0.85;
+}
+.mark-ligature::after {
+  content: '';
+  position: absolute;
+  bottom: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: var(--accent);
+}
+.light-preview .mark-ligature { color: #1a1a1a; }
+
+/* 2 — Nested */
+.mark-nested {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+.mark-nested .outer-g {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 140px;
+  font-weight: 300;
+  color: var(--text-bright);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -55%);
+  line-height: 1;
+}
+.mark-nested .inner-s {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 52px;
+  font-weight: 600;
+  color: var(--accent);
+  position: absolute;
+  top: 50%;
+  left: 55%;
+  transform: translate(-50%, -40%);
+  line-height: 1;
+}
+.light-preview .mark-nested .outer-g { color: #1a1a1a; }
+
+/* 3 — Geometric / Bauhaus */
+.mark-geometric {
+  width: 110px;
+  height: 110px;
+  position: relative;
+}
+.mark-geometric .geo-circle {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  border: 3px solid var(--text-bright);
+  border-radius: 50%;
+  top: 10px;
+  left: 10px;
+}
+.mark-geometric .geo-s {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 200;
+  font-size: 44px;
+  color: var(--text-bright);
+  position: absolute;
+  top: 15px;
+  left: 22px;
+  line-height: 1;
+}
+.mark-geometric .geo-g {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 200;
+  font-size: 44px;
+  color: var(--text-bright);
+  position: absolute;
+  bottom: 12px;
+  right: 18px;
+  line-height: 1;
+}
+.mark-geometric .geo-line {
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  right: 5px;
+  height: 1px;
+  background: var(--accent);
+  transform: rotate(-30deg);
+}
+.light-preview .mark-geometric .geo-circle { border-color: #1a1a1a; }
+.light-preview .mark-geometric .geo-s,
+.light-preview .mark-geometric .geo-g { color: #1a1a1a; }
+
+/* 4 — Stacked Vertical */
+.mark-stacked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 0.82;
+}
+.mark-stacked .stack-s {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 80px;
+  font-weight: 900;
+  color: var(--text-bright);
+  letter-spacing: -2px;
+}
+.mark-stacked .stack-divider {
+  width: 40px;
+  height: 1px;
+  background: var(--accent);
+  margin: 4px 0;
+}
+.mark-stacked .stack-g {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 80px;
+  font-weight: 900;
+  color: var(--text-bright);
+  letter-spacing: -2px;
+}
+.light-preview .mark-stacked .stack-s,
+.light-preview .mark-stacked .stack-g { color: #1a1a1a; }
+
+/* 5 — Overlapping Transparency */
+.mark-overlap {
+  position: relative;
+  width: 140px;
+  height: 100px;
+}
+.mark-overlap .over-s {
+  font-family: 'Raleway', sans-serif;
+  font-size: 88px;
+  font-weight: 800;
+  color: rgba(176, 141, 87, 0.7);
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-55%);
+  line-height: 1;
+  mix-blend-mode: screen;
+}
+.mark-overlap .over-g {
+  font-family: 'Raleway', sans-serif;
+  font-size: 88px;
+  font-weight: 800;
+  color: rgba(200, 202, 208, 0.5);
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-55%);
+  line-height: 1;
+  mix-blend-mode: screen;
+}
+.light-preview .mark-overlap .over-s { color: rgba(26, 39, 68, 0.6); mix-blend-mode: multiply; }
+.light-preview .mark-overlap .over-g { color: rgba(176, 141, 87, 0.5); mix-blend-mode: multiply; }
+
+/* 6 — Contained Circle */
+.mark-contained {
+  width: 120px;
+  height: 120px;
+  border: 2px solid var(--text-bright);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+.mark-contained .cont-letters {
+  font-family: 'DM Serif Display', serif;
+  font-size: 42px;
+  color: var(--text-bright);
+  letter-spacing: 3px;
+  line-height: 1;
+  padding-left: 3px;
+}
+.mark-contained::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+}
+.light-preview .mark-contained { border-color: #1a1a1a; }
+.light-preview .mark-contained::before { border-color: #ccc; }
+.light-preview .mark-contained .cont-letters { color: #1a1a1a; }
+
+/* 7 — Negative Space (spine suggestion) */
+.mark-negative {
+  position: relative;
+  width: 100px;
+  height: 130px;
+}
+.mark-negative .neg-s {
+  font-family: 'Playfair Display', serif;
+  font-size: 110px;
+  font-weight: 900;
+  color: var(--accent);
+  position: absolute;
+  top: -5px;
+  left: 0;
+  line-height: 1;
+  clip-path: inset(0 50% 0 0);
+}
+.mark-negative .neg-g {
+  font-family: 'Playfair Display', serif;
+  font-size: 110px;
+  font-weight: 900;
+  color: var(--text-bright);
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  line-height: 1;
+  clip-path: inset(0 0 0 50%);
+}
+.mark-negative .neg-line {
+  position: absolute;
+  left: 50%;
+  top: 8px;
+  bottom: 20px;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+  transform: translateX(-50%);
+}
+.light-preview .mark-negative .neg-g { color: #1a1a1a; }
+
+/* 8 — Mirrored / Rotational */
+.mark-mirrored {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+.mark-mirrored .mir-s {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--text-bright);
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  line-height: 1;
+}
+.mark-mirrored .mir-g {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 64px;
+  font-weight: 700;
+  color: var(--accent);
+  position: absolute;
+  bottom: 10px;
+  right: 12px;
+  line-height: 1;
+  transform: rotate(180deg);
+}
+.mark-mirrored .mir-dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.light-preview .mark-mirrored .mir-s { color: #1a1a1a; }
+
+/* 9 — Ultra Minimal */
+.mark-minimal {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.mark-minimal .min-s {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 56px;
+  font-weight: 100;
+  color: var(--text-bright);
+  line-height: 1;
+}
+.mark-minimal .min-dot {
+  width: 4px;
+  height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.mark-minimal .min-g {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 56px;
+  font-weight: 100;
+  color: var(--text-bright);
+  line-height: 1;
+}
+.light-preview .mark-minimal .min-s,
+.light-preview .mark-minimal .min-g { color: #1a1a1a; }
+
+/* 10 — Serif Classical */
+.mark-classical {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.mark-classical .class-letters {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 62px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-bright);
+  letter-spacing: 14px;
+  line-height: 1;
+  padding-left: 14px;
+}
+.mark-classical .class-ornament {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+.mark-classical .class-ornament span {
+  display: block;
+  height: 1px;
+  width: 28px;
+  background: var(--accent);
+}
+.mark-classical .class-ornament i {
+  font-family: 'Bodoni Moda', serif;
+  font-style: italic;
+  font-size: 10px;
+  color: var(--accent);
+  font-weight: 400;
+}
+.light-preview .mark-classical .class-letters { color: #1a1a1a; }
+
+/* 11 — Modern Humanist */
+.mark-humanist {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+.mark-humanist .hum-s {
+  font-family: 'Outfit', sans-serif;
+  font-size: 72px;
+  font-weight: 600;
+  color: var(--teal-light);
+  line-height: 1;
+}
+.mark-humanist .hum-g {
+  font-family: 'Outfit', sans-serif;
+  font-size: 72px;
+  font-weight: 300;
+  color: var(--text-bright);
+  line-height: 1;
+  margin-left: -4px;
+}
+.mark-humanist .hum-arc {
+  position: absolute;
+  bottom: -2px;
+  left: 5px;
+  right: 5px;
+  height: 24px;
+  border-bottom: 2px solid var(--teal);
+  border-radius: 0 0 50% 50%;
+}
+.light-preview .mark-humanist .hum-g { color: #1a1a1a; }
+
+/* 12 — Split Composition */
+.mark-split {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.mark-split .split-s {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px;
+  font-weight: 700;
+  color: var(--text-bright);
+  line-height: 1;
+  padding-right: 16px;
+}
+.mark-split .split-bar {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+}
+.mark-split .split-g {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 72px;
+  font-weight: 300;
+  color: var(--text-dim);
+  line-height: 1;
+  padding-left: 16px;
+}
+.light-preview .mark-split .split-s { color: #1a1a1a; }
+.light-preview .mark-split .split-g { color: #888; }
+
+/* ══════════════════════════════════════════════
+   TYPOGRAPHY SPECIMENS
+   ══════════════════════════════════════════════ */
+.type-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 24px;
+}
+.type-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 36px 32px;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.35s;
+  opacity: 0;
+  animation: cardReveal 0.6s ease forwards;
+}
+.type-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+  border-color: var(--border-hover);
+}
+.type-card.light-preview {
+  background: #fff;
+  border-color: #e0e0e0;
+}
+.type-card .font-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.type-card.light-preview .font-label { color: #999; border-color: #e0e0e0; }
+
+/* Specimen 1 — Playfair Display + Montserrat */
+.spec-1 .name {
+  font-family: 'Playfair Display', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: -0.5px;
+  line-height: 1.1;
+}
+.spec-1 .sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 8px;
+}
+.spec-1.light-preview .name { color: #1a1a1a; }
+
+/* Specimen 2 — Cormorant Garamond tracked wide */
+.spec-2 .name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 26px;
+  font-weight: 300;
+  color: var(--text-bright);
+  letter-spacing: 10px;
+  text-transform: uppercase;
+  line-height: 1.2;
+}
+.spec-2 .sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+.spec-2.light-preview .name { color: #1a1a1a; }
+
+/* Specimen 3 — Bodoni Moda italic + Outfit */
+.spec-3 .name {
+  font-family: 'Bodoni Moda', serif;
+  font-size: 36px;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--text-bright);
+  letter-spacing: 1px;
+  line-height: 1.1;
+}
+.spec-3 .sub {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 10px;
+}
+.spec-3.light-preview .name { color: #1a1a1a; }
+
+/* Specimen 4 — DM Serif Display + Source Sans */
+.spec-4 .name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 34px;
+  color: var(--text-bright);
+  line-height: 1.15;
+}
+.spec-4 .sub {
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 6px;
+}
+.spec-4.light-preview .name { color: #1a1a1a; }
+
+/* Specimen 5 — Montserrat ultra-light */
+.spec-5 .name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 28px;
+  font-weight: 200;
+  color: var(--text-bright);
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  line-height: 1.3;
+}
+.spec-5 .sub {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 6px;
+}
+.spec-5.light-preview .name { color: #1a1a1a; }
+
+/* Specimen 6 — Raleway stacked tight */
+.spec-6 .name {
+  font-family: 'Raleway', sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  color: var(--text-bright);
+  letter-spacing: -1px;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.spec-6 .sub {
+  font-family: 'Raleway', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+.spec-6.light-preview .name { color: #1a1a1a; }
+
+/* Specimen 7 — Libre Baskerville + Josefin Sans */
+.spec-7 .name {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: var(--text-bright);
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+}
+.spec-7 .sub {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 300;
+  letter-spacing: 7px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-top: 8px;
+}
+.spec-7.light-preview .name { color: #1a1a1a; }
+
+/* Specimen 8 — Outfit modern with inline mark */
+.spec-8 {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.spec-8 .inline-mark {
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: 2px;
+  flex-shrink: 0;
+}
+.spec-8 .text-block {}
+.spec-8 .name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: 0;
+  line-height: 1.15;
+}
+.spec-8 .sub {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--text-dim);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.spec-8.light-preview .name { color: #1a1a1a; }
+
+/* ══════════════════════════════════════════════
+   COLOR PALETTES
+   ══════════════════════════════════════════════ */
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 24px;
+}
+.palette-card {
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.35s;
+  opacity: 0;
+  animation: cardReveal 0.6s ease forwards;
+}
+.palette-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-hover);
+}
+.palette-demo {
+  padding: 40px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+}
+.palette-demo .demo-letters {
+  font-family: 'Playfair Display', serif;
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  line-height: 1;
+}
+.palette-demo .demo-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+.palette-info {
+  padding: 16px 20px;
+  background: var(--bg-card);
+}
+.palette-info h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-bright);
+  margin-bottom: 10px;
+}
+.palette-swatches {
+  display: flex;
+  gap: 6px;
+}
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.1);
+  position: relative;
+}
+.swatch .swatch-label {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 8px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+.palette-desc {
+  font-size: 12px;
+  color: var(--text-dim);
+  margin-top: 18px;
+  line-height: 1.5;
+}
+
+/* ── Animations ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes cardReveal {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Footer ── */
+.page-footer {
+  padding: 40px 48px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 12px;
+  font-family: 'Montserrat', sans-serif;
+  letter-spacing: 1px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .page-header, .section { padding-left: 24px; padding-right: 24px; }
+  .section-nav { padding: 0 16px; flex-wrap: wrap; }
+  .nav-link { padding: 12px 14px; font-size: 10px; letter-spacing: 1.5px; }
+  .logo-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .type-grid { grid-template-columns: 1fr; }
+  .palette-grid { grid-template-columns: 1fr; }
+  .reference-inner { grid-template-columns: 1fr; }
+  .view-controls { margin-left: 0; margin-top: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="page-header">
+  <div class="header-eyebrow">Brand Identity Exploration</div>
+  <h1 class="header-title">Saint Germain <em>Physical Therapy</em></h1>
+  <p class="header-sub">Logo, lettermark, and typography explorations for a premium physical therapy practice. A working design document.</p>
+</header>
+
+<!-- ══ NAV ══ -->
+<nav class="section-nav">
+  <a href="#reference" class="nav-link active">Reference</a>
+  <a href="#lettermarks" class="nav-link">Lettermarks</a>
+  <a href="#typography" class="nav-link">Typography</a>
+  <a href="#palettes" class="nav-link">Palettes</a>
+  <div class="view-controls">
+    <button class="toggle-btn" id="lightToggle" onclick="toggleAllLight()">Light Preview</button>
+  </div>
+</nav>
+
+<!-- ══ REFERENCE ══ -->
+<section class="section" id="reference">
+  <div class="section-label">01</div>
+  <h2 class="section-title">Design Reference &amp; Criteria</h2>
+
+  <div class="reference-panel">
+    <button class="reference-toggle open" onclick="toggleReference(this)">
+      Evaluation Criteria & Guidelines
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+    </button>
+    <div class="reference-body open">
+      <div class="reference-inner">
+
+        <div class="ref-card">
+          <h4>General Logo Principles</h4>
+          <ul>
+            <li>Recognizable at a glance — works in under 2 seconds</li>
+            <li>No more than 2–3 core visual elements</li>
+            <li>Works as single-color silhouette (the "fax test")</li>
+            <li>Legible at 16px favicon and at billboard scale</li>
+            <li>Contains a distinctive visual hook that sticks</li>
+            <li>Effective in full color, single color, and reversed</li>
+            <li>Would not look dated in 10–15 years</li>
+            <li>Could be sketched from memory on a napkin</li>
+          </ul>
+        </div>
+
+        <div class="ref-card">
+          <h4>Lettermark Essentials</h4>
+          <ul>
+            <li>Both S and G immediately identifiable</li>
+            <li>Letters don't get lost inside each other</li>
+            <li>Optical kerning — spacing looks even to the eye</li>
+            <li>S+G pair: both have open bowls facing same direction — kerning must account for this</li>
+            <li>Visual weight balanced — neither letter overpowers</li>
+            <li>Composition has a clear center of gravity</li>
+            <li>Techniques: ligature, nesting, stacking, mirroring, containment, overlap</li>
+          </ul>
+        </div>
+
+        <div class="ref-card">
+          <h4>Physical Therapy Specifics</h4>
+          <ul>
+            <li>Conveys trust and clinical competence</li>
+            <li>Welcoming, not intimidating — patients are often anxious</li>
+            <li>Sweet spot: medical credibility + human warmth</li>
+            <li>Avoid looking like hospital/ER (too clinical)</li>
+            <li>Avoid looking like gym/CrossFit (too aggressive)</li>
+            <li>Implied movement through curves, arcs, forward lean</li>
+            <li>Name hierarchy: "Saint Germain" dominant, "Physical Therapy" secondary</li>
+          </ul>
+        </div>
+
+        <div class="ref-card">
+          <h4>Color Psychology for PT</h4>
+          <ul>
+            <li><strong>Blues:</strong> Trust, calm, clinical authority</li>
+            <li><strong>Greens:</strong> Healing, renewal, growth</li>
+            <li><strong>Teals:</strong> Modern freshness, trust + growth</li>
+            <li><strong>Warm neutrals:</strong> Boutique, upscale, spa-adjacent</li>
+            <li><strong>Navy + gold:</strong> Premium, established, serious</li>
+            <li><strong>Avoid:</strong> Aggressive reds, neons, black-heavy palettes</li>
+          </ul>
+        </div>
+
+        <div class="ref-card">
+          <h4>Typography Guidance</h4>
+          <ul>
+            <li><strong>Serifs:</strong> Tradition, trust — good for "Saint Germain"</li>
+            <li><strong>Humanist sans:</strong> Approachable yet professional</li>
+            <li><strong>Geometric sans:</strong> Clean, modern — pair with warm colors</li>
+            <li>"Saint Germain" has French heritage — honor elegance without pretension</li>
+            <li>Avoid: scripts, ultra-condensed, novelty fonts</li>
+            <li>Tight kerning = modern/bold; loose = elegant/airy</li>
+          </ul>
+        </div>
+
+        <div class="ref-card">
+          <h4>Common Pitfalls to Avoid</h4>
+          <ul>
+            <li>Generic stick figure in motion (overused)</li>
+            <li>Spine illustration = every chiropractor's logo</li>
+            <li>Too many colors or gradients</li>
+            <li>Clip-art-adjacent imagery</li>
+            <li>Prioritizing "Physical Therapy" over practice name</li>
+            <li>Logos that look like they came from a template site</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LETTERMARKS ══ -->
+<section class="section" id="lettermarks">
+  <div class="section-label">02</div>
+  <h2 class="section-title">Lettermark Explorations</h2>
+
+  <div class="logo-grid">
+
+    <!-- 1: Ligature -->
+    <div class="logo-card" style="animation-delay: 0.1s">
+      <div class="mark-area">
+        <div class="mark-ligature">
+          <span class="letter-s">S</span><span class="letter-g">G</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Ligature</h3>
+        <p>Letters share visual space, the tail of S flows toward G. Classical serif with connected rhythm.</p>
+        <div class="card-tags"><span class="tag">Serif</span><span class="tag">Connected</span><span class="tag">Elegant</span></div>
+      </div>
+    </div>
+
+    <!-- 2: Nested -->
+    <div class="logo-card" style="animation-delay: 0.15s">
+      <div class="mark-area">
+        <div class="mark-nested">
+          <span class="outer-g">G</span>
+          <span class="inner-s">S</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Nested</h3>
+        <p>S sits inside the open bowl of G. Delicate weight contrast — light outer, bold inner.</p>
+        <div class="card-tags"><span class="tag">Contained</span><span class="tag">Hierarchy</span></div>
+      </div>
+    </div>
+
+    <!-- 3: Geometric -->
+    <div class="logo-card" style="animation-delay: 0.2s">
+      <div class="mark-area">
+        <div class="mark-geometric">
+          <div class="geo-circle"></div>
+          <span class="geo-s">S</span>
+          <span class="geo-g">G</span>
+          <div class="geo-line"></div>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Geometric</h3>
+        <p>Bauhaus-inspired construction. Ultra-light weight within a precise circular frame, bisected by an angled rule.</p>
+        <div class="card-tags"><span class="tag">Bauhaus</span><span class="tag">Precise</span><span class="tag">Modern</span></div>
+      </div>
+    </div>
+
+    <!-- 4: Stacked -->
+    <div class="logo-card" style="animation-delay: 0.25s">
+      <div class="mark-area">
+        <div class="mark-stacked">
+          <span class="stack-s">S</span>
+          <div class="stack-divider"></div>
+          <span class="stack-g">G</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Stacked Vertical</h3>
+        <p>High-contrast Bodoni stacking with gold rule divider. Monumental and authoritative.</p>
+        <div class="card-tags"><span class="tag">Bold</span><span class="tag">Vertical</span><span class="tag">Monumental</span></div>
+      </div>
+    </div>
+
+    <!-- 5: Overlap -->
+    <div class="logo-card" style="animation-delay: 0.3s">
+      <div class="mark-area">
+        <div class="mark-overlap">
+          <span class="over-s">S</span>
+          <span class="over-g">G</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Overlapping Transparency</h3>
+        <p>Screen-blended overlap creates luminous intersection. Gold meets silver-white in a third tone.</p>
+        <div class="card-tags"><span class="tag">Blend</span><span class="tag">Layered</span><span class="tag">Dynamic</span></div>
+      </div>
+    </div>
+
+    <!-- 6: Contained -->
+    <div class="logo-card" style="animation-delay: 0.35s">
+      <div class="mark-area">
+        <div class="mark-contained">
+          <span class="cont-letters">SG</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Contained Circle</h3>
+        <p>Double-ring containment with DM Serif letterforms. Crest-like, institutional gravitas.</p>
+        <div class="card-tags"><span class="tag">Crest</span><span class="tag">Institutional</span><span class="tag">Versatile</span></div>
+      </div>
+    </div>
+
+    <!-- 7: Negative Space -->
+    <div class="logo-card" style="animation-delay: 0.4s">
+      <div class="mark-area">
+        <div class="mark-negative">
+          <span class="neg-s">S</span>
+          <span class="neg-g">G</span>
+          <div class="neg-line"></div>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Negative Space Split</h3>
+        <p>Each letter halved and re-joined. The central gradient line suggests a spine — a subtle nod to PT.</p>
+        <div class="card-tags"><span class="tag">Conceptual</span><span class="tag">Split</span><span class="tag">Spine motif</span></div>
+      </div>
+    </div>
+
+    <!-- 8: Mirrored -->
+    <div class="logo-card" style="animation-delay: 0.45s">
+      <div class="mark-area">
+        <div class="mark-mirrored">
+          <span class="mir-s">S</span>
+          <span class="mir-g">G</span>
+          <div class="mir-dot"></div>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Rotational Mirror</h3>
+        <p>G rotated 180° echoes the S, creating point symmetry around a central pivot. Balance as metaphor.</p>
+        <div class="card-tags"><span class="tag">Symmetry</span><span class="tag">Dual-tone</span></div>
+      </div>
+    </div>
+
+    <!-- 9: Minimal -->
+    <div class="logo-card" style="animation-delay: 0.5s">
+      <div class="mark-area">
+        <div class="mark-minimal">
+          <span class="min-s">S</span>
+          <span class="min-dot"></span>
+          <span class="min-g">G</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Ultra-Minimal</h3>
+        <p>Josefin Sans at hairline weight. Maximum restraint — just two letters and a dot.</p>
+        <div class="card-tags"><span class="tag">Minimal</span><span class="tag">Airy</span><span class="tag">Modern</span></div>
+      </div>
+    </div>
+
+    <!-- 10: Classical -->
+    <div class="logo-card" style="animation-delay: 0.55s">
+      <div class="mark-area">
+        <div class="mark-classical">
+          <span class="class-letters">SG</span>
+          <div class="class-ornament">
+            <span></span>
+            <i>est.</i>
+            <span></span>
+          </div>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Serif Classical</h3>
+        <p>Italic Bodoni Moda with wide tracking. French luxury register — ornamental flourish below.</p>
+        <div class="card-tags"><span class="tag">Parisian</span><span class="tag">Luxury</span><span class="tag">Heritage</span></div>
+      </div>
+    </div>
+
+    <!-- 11: Humanist -->
+    <div class="logo-card" style="animation-delay: 0.6s">
+      <div class="mark-area">
+        <div class="mark-humanist">
+          <span class="hum-s">S</span><span class="hum-g">G</span>
+          <div class="hum-arc"></div>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Modern Humanist</h3>
+        <p>Outfit with weight contrast (semi-bold S, light G). Teal accent with an arc suggesting range of motion.</p>
+        <div class="card-tags"><span class="tag">Approachable</span><span class="tag">Motion</span><span class="tag">Warm</span></div>
+      </div>
+    </div>
+
+    <!-- 12: Split -->
+    <div class="logo-card" style="animation-delay: 0.65s">
+      <div class="mark-area">
+        <div class="mark-split">
+          <span class="split-s">S</span>
+          <div class="split-bar"></div>
+          <span class="split-g">G</span>
+        </div>
+      </div>
+      <div class="card-info">
+        <h3>Split Composition</h3>
+        <p>Cormorant Garamond with bold/light weight split. A gradient bar divides and connects.</p>
+        <div class="card-tags"><span class="tag">Divided</span><span class="tag">Weight contrast</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ TYPOGRAPHY ══ -->
+<section class="section" id="typography">
+  <div class="section-label">03</div>
+  <h2 class="section-title">Typography Specimens</h2>
+
+  <div class="type-grid">
+
+    <div class="type-card spec-1" style="animation-delay: 0.1s">
+      <div class="font-label">Playfair Display 700 + Montserrat 500</div>
+      <div class="name">Saint Germain</div>
+      <div class="sub">Physical Therapy</div>
+    </div>
+
+    <div class="type-card spec-2" style="animation-delay: 0.15s">
+      <div class="font-label">Cormorant Garamond 300 — Tracked Wide</div>
+      <div class="name">Saint Germain</div>
+      <div class="sub">Physical Therapy</div>
+    </div>
+
+    <div class="type-card spec-3" style="animation-delay: 0.2s">
+      <div class="font-label">Bodoni Moda Italic + Outfit 300</div>
+      <div class="name">Saint Germain</div>
+      <div class="sub">Physical Therapy</div>
+    </div>
+
+    <div class="type-card spec-4" style="animation-delay: 0.25s">
+      <div class="font-label">DM Serif Display + Source Sans 3</div>
+      <div class="name">Saint Germain</div>
+      <div class="sub">Physical Therapy</div>
+    </div>
+
+    <div class="type-card spec-5" style="animation-delay: 0.3s">
+      <div class="font-label">Montserrat 200 — Ultra Light Tracked</div>
+      <div class="name">Saint Germain</div>
+      <div class="sub">Physical Therapy</div>
+    </div>
+
+    <div class="type-card spec-6" style="animation-delay: 0.35s">
+      <div class="font-label">Raleway 800 — Heavy Stacked</div>
+      <div class="name">Saint<br>Germain</div>
+      <div class="sub">Physical Therapy</div>
+    </div>
+
+    <div class="type-card spec-7" style="animation-delay: 0.4s">
+      <div class="font-label">Libre Baskerville + Josefin Sans 300</div>
+      <div class="name">Saint Germain</div>
+      <div class="sub">Physical Therapy</div>
+    </div>
+
+    <div class="type-card spec-8" style="animation-delay: 0.45s">
+      <div class="font-label">Outfit 700 + Circular Mark</div>
+      <div class="inline-mark">SG</div>
+      <div class="text-block">
+        <div class="name">Saint Germain</div>
+        <div class="sub">Physical Therapy</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ══ PALETTES ══ -->
+<section class="section" id="palettes">
+  <div class="section-label">04</div>
+  <h2 class="section-title">Color Palette Explorations</h2>
+
+  <div class="palette-grid">
+
+    <!-- Navy + Gold -->
+    <div class="palette-card" style="animation-delay: 0.1s">
+      <div class="palette-demo" style="background: linear-gradient(145deg, #1a2744, #243660);">
+        <div class="demo-letters" style="color: #c9a84c;">SG</div>
+        <div class="demo-name" style="color: rgba(201,168,76,0.6);">Saint Germain Physical Therapy</div>
+      </div>
+      <div class="palette-info">
+        <h3>Navy &amp; Gold</h3>
+        <div class="palette-swatches">
+          <div class="swatch" style="background:#1a2744;"><span class="swatch-label">Navy</span></div>
+          <div class="swatch" style="background:#243660;"><span class="swatch-label">Mid</span></div>
+          <div class="swatch" style="background:#c9a84c;"><span class="swatch-label">Gold</span></div>
+          <div class="swatch" style="background:#e4cc7a;"><span class="swatch-label">Light</span></div>
+          <div class="swatch" style="background:#f5f0e6;"><span class="swatch-label">Cream</span></div>
+        </div>
+        <p class="palette-desc">Premium and established. Evokes institutional trust, old-world credibility. Strong for referral-based practice positioning.</p>
+      </div>
+    </div>
+
+    <!-- Teal + Cream -->
+    <div class="palette-card" style="animation-delay: 0.2s">
+      <div class="palette-demo" style="background: linear-gradient(145deg, #f5ede0, #efe5d4);">
+        <div class="demo-letters" style="color: #2a8a7a;">SG</div>
+        <div class="demo-name" style="color: rgba(42,138,122,0.5);">Saint Germain Physical Therapy</div>
+      </div>
+      <div class="palette-info">
+        <h3>Teal &amp; Cream</h3>
+        <div class="palette-swatches">
+          <div class="swatch" style="background:#2a8a7a;"><span class="swatch-label">Teal</span></div>
+          <div class="swatch" style="background:#3bb5a0;"><span class="swatch-label">Light</span></div>
+          <div class="swatch" style="background:#f5ede0;"><span class="swatch-label">Cream</span></div>
+          <div class="swatch" style="background:#e8ddd0;"><span class="swatch-label">Warm</span></div>
+          <div class="swatch" style="background:#1e4a42;"><span class="swatch-label">Deep</span></div>
+        </div>
+        <p class="palette-desc">Modern healing energy. The cream grounds the teal's freshness. Feels boutique and spa-adjacent without losing clinical weight.</p>
+      </div>
+    </div>
+
+    <!-- Forest + Stone -->
+    <div class="palette-card" style="animation-delay: 0.3s">
+      <div class="palette-demo" style="background: linear-gradient(145deg, #2d5a3d, #3d7050);">
+        <div class="demo-letters" style="color: #d4cbb8;">SG</div>
+        <div class="demo-name" style="color: rgba(212,203,184,0.5);">Saint Germain Physical Therapy</div>
+      </div>
+      <div class="palette-info">
+        <h3>Forest &amp; Stone</h3>
+        <div class="palette-swatches">
+          <div class="swatch" style="background:#2d5a3d;"><span class="swatch-label">Forest</span></div>
+          <div class="swatch" style="background:#3d7a52;"><span class="swatch-label">Green</span></div>
+          <div class="swatch" style="background:#d4cbb8;"><span class="swatch-label">Stone</span></div>
+          <div class="swatch" style="background:#e8e0d0;"><span class="swatch-label">Sand</span></div>
+          <div class="swatch" style="background:#1a3325;"><span class="swatch-label">Dark</span></div>
+        </div>
+        <p class="palette-desc">Natural and grounded. Connotes organic healing, resilience, and growth. Earthy without feeling rustic.</p>
+      </div>
+    </div>
+
+    <!-- Slate + Coral -->
+    <div class="palette-card" style="animation-delay: 0.4s">
+      <div class="palette-demo" style="background: linear-gradient(145deg, #f8f6f3, #f0ece8);">
+        <div class="demo-letters" style="color: #4a6080;">SG</div>
+        <div class="demo-name" style="color: #d47a6a;">Saint Germain Physical Therapy</div>
+      </div>
+      <div class="palette-info">
+        <h3>Slate &amp; Coral</h3>
+        <div class="palette-swatches">
+          <div class="swatch" style="background:#4a6080;"><span class="swatch-label">Slate</span></div>
+          <div class="swatch" style="background:#6888aa;"><span class="swatch-label">Mid</span></div>
+          <div class="swatch" style="background:#d47a6a;"><span class="swatch-label">Coral</span></div>
+          <div class="swatch" style="background:#f0ece8;"><span class="swatch-label">Linen</span></div>
+          <div class="swatch" style="background:#2d3a48;"><span class="swatch-label">Dark</span></div>
+        </div>
+        <p class="palette-desc">Contemporary and warm. The coral humanizes the slate's professionalism. Distinctive in the PT landscape — memorable without being loud.</p>
+      </div>
+    </div>
+
+    <!-- Charcoal + Sage -->
+    <div class="palette-card" style="animation-delay: 0.5s">
+      <div class="palette-demo" style="background: linear-gradient(145deg, #2d3035, #383c42);">
+        <div class="demo-letters" style="color: #9abf9a;">SG</div>
+        <div class="demo-name" style="color: rgba(154,191,154,0.5);">Saint Germain Physical Therapy</div>
+      </div>
+      <div class="palette-info">
+        <h3>Charcoal &amp; Sage</h3>
+        <div class="palette-swatches">
+          <div class="swatch" style="background:#2d3035;"><span class="swatch-label">Coal</span></div>
+          <div class="swatch" style="background:#484e55;"><span class="swatch-label">Gray</span></div>
+          <div class="swatch" style="background:#7a9a7a;"><span class="swatch-label">Sage</span></div>
+          <div class="swatch" style="background:#9abf9a;"><span class="swatch-label">Light</span></div>
+          <div class="swatch" style="background:#f0f4f0;"><span class="swatch-label">Mist</span></div>
+        </div>
+        <p class="palette-desc">Sophisticated and calming. The sage softens the charcoal's authority. Gender-neutral, age-neutral — works across all patient demographics.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="page-footer">
+  Saint Germain Physical Therapy — Brand Exploration Document
+</footer>
+
+<script>
+// Reference panel toggle
+function toggleReference(btn) {
+  btn.classList.toggle('open');
+  btn.nextElementSibling.classList.toggle('open');
+}
+
+// Light preview toggle
+let isLight = false;
+function toggleAllLight() {
+  isLight = !isLight;
+  const btn = document.getElementById('lightToggle');
+  btn.classList.toggle('active', isLight);
+  document.querySelectorAll('.logo-card').forEach(card => {
+    card.classList.toggle('light-preview', isLight);
+  });
+  document.querySelectorAll('.type-card').forEach(card => {
+    card.classList.toggle('light-preview', isLight);
+  });
+}
+
+// Stagger animation delays based on scroll visibility
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animationPlayState = 'running';
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.logo-card, .type-card, .palette-card').forEach((el, i) => {
+  el.style.animationPlayState = 'paused';
+  el.style.animationDelay = `${0.05 * (i % 6)}s`;
+  observer.observe(el);
+});
+
+// Active nav link on scroll
+const sections = document.querySelectorAll('.section');
+const navLinks = document.querySelectorAll('.nav-link');
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(section => {
+    const top = section.offsetTop - 80;
+    if (window.scrollY >= top) current = section.id;
+  });
+  navLinks.forEach(link => {
+    link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+  });
+});
+</script>
+
+</body>
+</html>
