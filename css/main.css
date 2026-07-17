@@ -504,17 +504,18 @@ section ul {
   display: flex;
   align-items: flex-start;
   gap: 20px;
-  padding: 16px 0;
-  padding-left: 0;
+  padding: 16px 12px;
+  margin-left: -15px;
+  margin-right: -12px;
   border-bottom: 1px solid var(--border-color);
   border-left: 3px solid transparent;
-  transition: border-color 0.2s ease, background-color 0.2s ease, padding-left 0.2s ease;
+  transition: border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
 }
 
 .work-list li:hover {
   border-left-color: var(--link-color);
   background-color: var(--work-hover-bg);
-  padding-left: 12px;
+  transform: translateX(12px);
 }
 
 .work-list li:last-child {
@@ -756,12 +757,12 @@ footer {
 
   /* Work list adjustments */
   .work-list li {
-    padding: 14px 0;
+    padding: 14px 12px;
     gap: 14px;
   }
 
   .work-list li:hover {
-    padding-left: 8px;
+    transform: translateX(8px);
   }
 
   .work-list img {
