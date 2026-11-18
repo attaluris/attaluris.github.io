@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Triad Card Table</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;700&display=swap">
+<style>
+/* Layout: a felt card table. Header bar, then [tray | board | tray], then a rail holding the deck. Single dark-felt look. */
+:root{
+  color-scheme: dark;
+  --felt-hi:#2f7a63; --felt:#1c5646; --felt-lo:#0c2f26;
+  --ink:#f3eee3; --ink-dim:rgba(243,238,227,.62); --ink-faint:rgba(243,238,227,.16);
+  --paper:#fffdf7; --paper-edge:#ddd5c3; --paper-ink:#25221d; --paper-dim:#6d675b; --paper-line:#e7e0d1;
+  --back:#263a6b; --back-hi:#33508f; --gold:#f0b54a;
+  --ok:#3fd08f; --bad:#ff6565;
+  --p1:#f0b54a; --p2:#78c6ff;
+  --display:"Bricolage Grotesque", ui-rounded, system-ui, sans-serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+html,body{height:100%}
+body{margin:0;background:var(--felt-lo);color:var(--ink);font-family:var(--body);overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+kbd{font-family:var(--body);font-weight:700;font-size:.78em;padding:.08em .42em;border-radius:5px;border:1px solid currentColor;opacity:.85}
+
+#table{position:relative;height:100%;display:grid;grid-template-rows:auto 1fr auto;
+  background:radial-gradient(ellipse 120% 90% at 50% 42%, var(--felt-hi) 0%, var(--felt) 48%, var(--felt-lo) 100%);
+  padding-left:max(0px, env(safe-area-inset-left,0px));padding-right:max(0px, env(safe-area-inset-right,0px))}
+#table::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.22;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+
+/* header */
+#bar{display:flex;align-items:center;gap:16px;padding:10px max(16px, env(safe-area-inset-right,0px)) 10px max(16px, env(safe-area-inset-left,0px));position:relative;z-index:20;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;font-size:22px;letter-spacing:-.01em;display:flex;align-items:center;gap:8px}
+.brand svg{width:26px;height:26px}
+#stats{flex:1;display:flex;gap:18px;justify-content:center;font-variant-numeric:tabular-nums;color:var(--ink-dim);font-size:14px;flex-wrap:wrap}
+#stats b{color:var(--ink);font-weight:700;font-size:16px;margin-right:4px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:1px solid var(--ink-faint);background:rgba(255,255,255,.07);border-radius:999px;padding:7px 14px;font-size:14px;font-weight:500;transition:background .15s}
+.btn:hover{background:rgba(255,255,255,.15)}
+.btn kbd{margin-left:6px}
+
+/* play area */
+#play{display:grid;grid-template-columns:minmax(120px,180px) 1fr;min-height:0;position:relative}
+body[data-mode="2"] #play{grid-template-columns:minmax(130px,200px) 1fr minmax(130px,200px)}
+#board{min-width:0;min-height:0;margin:8px 12px}
+.tray{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 10px;margin:8px 12px;border-radius:18px;background:rgba(0,0,0,.16);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05);transition:box-shadow .2s,background .2s;--pc:var(--p1);position:relative}
+#tray1{--pc:var(--p2)}
+#tray1,body[data-mode="1"] #tray1{display:none}
+body[data-mode="2"] #tray1{display:flex}
+body[data-mode="2"] #play > #tray1{order:3}
+.tname{font-family:var(--display);font-weight:600;font-size:15px;color:var(--pc);letter-spacing:.02em;text-transform:uppercase}
+body[data-mode="1"] .tname{color:var(--ink-dim)}
+.tscore{font-family:var(--display);font-weight:800;font-size:44px;line-height:1;font-variant-numeric:tabular-nums}
+.tsub{font-size:13px;color:var(--ink-dim);font-variant-numeric:tabular-nums;text-align:center}
+.pile{width:66px;height:92px;border-radius:7px;border:1.5px dashed var(--ink-faint);margin:10px 0 18px}
+.call{display:none;border:none;background:var(--pc);color:#1d1a14;font-weight:700;font-size:17px;border-radius:14px;padding:12px 18px;width:100%;max-width:160px;box-shadow:0 4px 0 rgba(0,0,0,.3);transition:transform .08s, opacity .2s}
+.call:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(0,0,0,.3)}
+.call kbd{border-color:#1d1a14}
+body[data-mode="2"] .call{display:block}
+.cd{width:100%;max-width:160px;height:6px;border-radius:3px;background:rgba(0,0,0,.25);overflow:hidden;visibility:hidden}
+.cd i{display:block;height:100%;width:100%;background:var(--pc)}
+.tray.calling{background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 3px var(--pc),0 0 32px -4px var(--pc)}
+.tray.calling .cd{visibility:visible}
+.tray.calling .call{opacity:.5}
+.tray .state{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pc);min-height:15px}
+.tray.frozen{opacity:.55}
+.tray.frozen .call{opacity:.35;cursor:not-allowed}
+.tray.nudge{animation:nudge .5s}
+@keyframes nudge{30%{transform:translateY(-5px)}60%{transform:translateY(2px)}}
+
+/* rail with deck */
+#rail{display:flex;align-items:center;gap:18px;padding:8px max(16px, env(safe-area-inset-right,0px)) 14px max(16px, env(safe-area-inset-left,0px));position:relative;z-index:2}
+#deckSpot{position:relative;width:64px;height:90px;flex:none;transition:transform .35s}
+#deckSpot.empty::after{content:"";position:absolute;inset:0;border-radius:7px;border:1.5px dashed var(--ink-faint)}
+#stack{position:absolute;inset:0}
+#deckSpot.empty #stack{display:none}
+.half{position:absolute;inset:0;display:none}
+#deckSpot.shuffling{transform:scale(1.35) translateY(-10px)}
+#deckSpot.shuffling #stack{opacity:0}
+#deckSpot.shuffling .half{display:block}
+#deckSpot.shuffling .half.l{animation:riffL .52s ease-in-out 3}
+#deckSpot.shuffling .half.r{animation:riffR .52s ease-in-out 3}
+@keyframes riffL{0%,100%{transform:none}35%,55%{transform:translateX(-62%) rotate(-12deg)}}
+@keyframes riffR{0%,100%{transform:none}35%,55%{transform:translateX(62%) rotate(12deg) translateY(-3px)}}
+#deckInfo{font-variant-numeric:tabular-nums;color:var(--ink-dim);font-size:13px;line-height:1.35;min-width:70px}
+#deckInfo b{display:block;color:var(--ink);font-family:var(--display);font-size:22px}
+#msg{flex:1;min-width:0;font-size:15px;font-weight:500;opacity:0;transition:opacity .25s;text-align:center}
+#msg.show{opacity:1}
+#msg.bad{color:#ffb3a8}
+#msg.good{color:#a6f0c9}
+#railR{min-width:70px}
+
+/* cards */
+#layer{position:absolute;inset:0;pointer-events:none;z-index:10}
+.card{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;perspective:900px;
+  transition:transform .55s cubic-bezier(.2,.75,.25,1),width .55s cubic-bezier(.2,.75,.25,1),height .55s cubic-bezier(.2,.75,.25,1)}
+.card.inpile{pointer-events:none}
+.noanim .card,.card.noanim{transition:none!important}
+.lift{width:100%;height:100%;transition:transform .16s ease}
+.inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.3,.6,.3,1)}
+.card.up .inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:9%/6.4%;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.front{transform:rotateY(180deg);background:var(--paper);
+  box-shadow:0 1px 0 var(--paper-edge),0 2px 3px rgba(0,0,0,.28),0 10px 20px -6px rgba(0,0,0,.35);transition:box-shadow .15s}
+.front svg{display:block;width:100%;height:100%}
+.cardback{background:var(--paper);box-shadow:0 1px 0 var(--paper-edge),0 2px 4px rgba(0,0,0,.3);border-radius:9%/6.4%}
+.cardback::before{content:"";position:absolute;inset:6%;border-radius:6%/4.3%;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0 22%, rgba(240,181,74,.0) 22%),
+    repeating-linear-gradient(45deg, rgba(255,255,255,.09) 0 2px, transparent 2px 8px),
+    repeating-linear-gradient(-45deg, rgba(255,255,255,.09) 0 2px, transparent 2px 8px),
+    linear-gradient(160deg, var(--back-hi), var(--back));}
+.cardback::after{content:"";position:absolute;left:50%;top:50%;width:38%;aspect-ratio:1;transform:translate(-50%,-50%) rotate(45deg);
+  border:2px solid var(--gold);border-radius:22%;box-shadow:0 0 0 4px var(--back),0 0 0 5px rgba(240,181,74,.45)}
+.card.sel .lift{transform:translateY(-5%)}
+.card.sel .front{box-shadow:0 0 0 3px var(--gold),0 14px 26px -6px rgba(0,0,0,.55)}
+.card.ok .front{box-shadow:0 0 0 4px var(--ok),0 0 26px var(--ok)}
+.card.bad .lift{animation:shake .42s}
+.card.bad .front{box-shadow:0 0 0 3px var(--bad),0 10px 20px -6px rgba(0,0,0,.4)}
+.card.hint .front{animation:pulse 1.1s ease-in-out infinite}
+@keyframes shake{20%{transform:translateX(-7%) rotate(-3deg)}40%{transform:translateX(6%) rotate(2deg)}60%{transform:translateX(-4%)}80%{transform:translateX(2%)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 2px rgba(120,198,255,.5),0 2px 4px rgba(0,0,0,.3)}50%{box-shadow:0 0 0 5px #78c6ff,0 0 24px #78c6ff}}
+@media (hover:hover){.card:not(.inpile):hover .front{box-shadow:0 1px 0 var(--paper-edge),0 4px 6px rgba(0,0,0,.3),0 16px 26px -8px rgba(0,0,0,.45)}}
+
+/* overlay */
+#overlay{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:rgba(6,24,19,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);padding:max(16px, env(safe-area-inset-top,0px)) max(16px, env(safe-area-inset-right,0px)) max(16px, env(safe-area-inset-bottom,0px)) max(16px, env(safe-area-inset-left,0px));overflow:auto}
+#overlay[hidden]{display:none!important}
+.panel{background:var(--paper);color:var(--paper-ink);border-radius:20px;max-width:560px;width:100%;padding:28px 28px 22px;box-shadow:0 30px 80px rgba(0,0,0,.5);margin:auto;user-select:text;-webkit-user-select:text}
+.panel h1,.panel h2{font-family:var(--display);font-weight:800;margin:0 0 6px;letter-spacing:-.02em;text-wrap:balance}
+.panel h1{font-size:44px;line-height:1}
+.panel h2{font-size:30px}
+.lede{margin:8px 0 16px;line-height:1.5;color:var(--paper-ink);max-width:62ch}
+.example{display:flex;gap:12px;justify-content:center;margin:6px 0 8px}
+.mini{width:70px;height:98px;background:var(--paper);border-radius:9%/6.4%;box-shadow:0 0 0 1px var(--paper-line),0 4px 10px rgba(0,0,0,.12)}
+.mini svg{display:block;width:100%;height:100%}
+.excap{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:13px;color:var(--paper-dim);margin:10px auto 18px;max-width:380px}
+.excap b{color:var(--paper-ink);font-weight:700}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.big{border:none;border-radius:14px;padding:14px 16px;text-align:left;background:#1c5646;color:var(--ink);font-weight:700;font-size:18px;font-family:var(--display);box-shadow:0 4px 0 #0c2f26;transition:transform .08s}
+.big:active{transform:translateY(2px);box-shadow:0 2px 0 #0c2f26}
+.big small{display:block;font-family:var(--body);font-weight:400;font-size:13px;color:var(--ink-dim);margin-top:3px}
+.big.alt{background:#263a6b;box-shadow:0 4px 0 #15213f}
+.panel details{margin-top:16px;font-size:14px;color:var(--paper-dim)}
+.panel summary{cursor:pointer;font-weight:700;color:var(--paper-ink)}
+.panel label{display:flex;gap:10px;align-items:flex-start;margin:10px 0;color:var(--paper-ink);line-height:1.4}
+.panel label input{margin-top:3px;accent-color:#1c5646}
+.panel ul{padding-left:18px;line-height:1.5;margin:8px 0}
+.resume{margin-top:14px;width:100%;border:1px solid var(--paper-line);background:transparent;color:var(--paper-ink);border-radius:12px;padding:10px;font-weight:600}
+.endstats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:16px 0 20px}
+.endstats div{background:#f3eee2;border-radius:12px;padding:10px 12px;font-size:13px;color:var(--paper-dim)}
+.endstats b{display:block;font-family:var(--display);font-size:26px;color:var(--paper-ink);font-variant-numeric:tabular-nums}
+.endrow{display:flex;gap:10px}
+.endrow .big{flex:1;text-align:center}
+
+/* narrow screens: trays become bands above/below the board */
+@media (max-width:720px){
+  #play,body[data-mode="2"] #play{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}
+  body[data-mode="1"] #play{grid-template-rows:1fr auto}
+  body[data-mode="1"] #board{order:-1}
+  .tray{flex-direction:row;padding:8px 12px;margin:6px 12px;gap:12px;justify-content:space-between}
+  .tray .tcol{display:flex;flex-direction:column;align-items:flex-start}
+  .tscore{font-size:28px}
+  .pile{width:38px;height:53px;margin:0 14px 0 0}
+  .call{width:auto;padding:10px 14px;font-size:15px}
+  .cd{position:absolute;left:12px;right:12px;bottom:4px;width:auto;max-width:none;height:4px}
+  body[data-mode="2"] #play > #tray1{order:3}
+  #deckSpot{width:44px;height:62px}
+  .brand{font-size:18px}
+  #stats{order:3;flex-basis:100%;justify-content:flex-start;gap:14px}
+  .btn{padding:6px 11px;font-size:13px}
+  .btn kbd{display:none}
+  .modes{grid-template-columns:1fr}
+  .panel{padding:22px 18px 18px}
+  .panel h1{font-size:36px}
+}
+@media (min-width:721px){ .tray .tcol{display:contents} }
+@media (prefers-reduced-motion:reduce){
+  .card,.inner,.lift{transition-duration:.01s!important}
+  .card.bad .lift,.card.hint .front,#deckSpot.shuffling .half{animation:none!important}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="dot0" width="6.4" height="6.4" patternUnits="userSpaceOnUse"><circle cx="3.2" cy="3.2" r="1.75" fill="#e8710a"/></pattern>
+    <pattern id="dot1" width="6.4" height="6.4" patternUnits="userSpaceOnUse"><circle cx="3.2" cy="3.2" r="1.75" fill="#1f5fd1"/></pattern>
+    <pattern id="dot2" width="6.4" height="6.4" patternUnits="userSpaceOnUse"><circle cx="3.2" cy="3.2" r="1.75" fill="#26262b"/></pattern>
+  </defs>
+</svg>
+
+<div id="table">
+  <header id="bar">
+    <div class="brand">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="7" cy="8" r="5" fill="#e8710a"/><path d="M19 3l5.5 9.5h-11z" fill="#78c6ff"/><rect x="9" y="15" width="9" height="9" rx="1.5" fill="none" stroke="#f3eee3" stroke-width="2"/></svg>
+      Triad
+    </div>
+    <div id="stats"></div>
+    <div class="actions">
+      <button class="btn" id="btnHint" type="button">Hint<kbd>H</kbd></button>
+      <button class="btn" id="btnNone" type="button">No triad<kbd>N</kbd></button>
+      <button class="btn" id="btnDeal" type="button">Deal 3 more<kbd>D</kbd></button>
+      <button class="btn" id="btnSound" type="button">Sound on</button>
+      <button class="btn" id="btnMenu" type="button">Menu</button>
+    </div>
+  </header>
+
+  <main id="play">
+    <aside class="tray" id="tray0">
+      <div class="tcol">
+        <div class="tname" id="tname0">Found</div>
+        <div class="tscore" id="tscore0">0</div>
+        <div class="tsub" id="tsub0">triads</div>
+      </div>
+      <div class="pile" id="pile0"></div>
+      <div class="state" id="tstate0"></div>
+      <button class="call" id="call0" type="button">Call <kbd>A</kbd></button>
+      <div class="cd"><i id="cd0"></i></div>
+    </aside>
+    <section id="board" aria-label="Table"></section>
+    <aside class="tray" id="tray1">
+      <div class="tcol">
+        <div class="tname" id="tname1">Right player</div>
+        <div class="tscore" id="tscore1">0</div>
+        <div class="tsub" id="tsub1">triads</div>
+      </div>
+      <div class="pile" id="pile1"></div>
+      <div class="state" id="tstate1"></div>
+      <button class="call" id="call1" type="button">Call <kbd>L</kbd></button>
+      <div class="cd"><i id="cd1"></i></div>
+    </aside>
+  </main>
+
+  <footer id="rail">
+    <div id="deckSpot">
+      <div class="half l cardback"></div>
+      <div class="half r cardback"></div>
+      <div id="stack" class="cardback"></div>
+    </div>
+    <div id="deckInfo"><b id="deckCount">81</b>in deck</div>
+    <div id="msg" role="status" aria-live="polite"></div>
+    <div id="railR"></div>
+  </footer>
+
+  <div id="layer"></div>
+</div>
+
+<div id="overlay">
+  <div class="panel" id="startPanel">
+    <h1>Triad</h1>
+    <p class="lede">Every card has four features: <b>number</b>, <b>color</b>, <b>shape</b> and <b>fill</b>. Three cards form a <b>triad</b> when each feature is either the same on all three or different on all three. If two cards share something the third doesn't, it's not a triad.</p>
+    <div class="example" id="example"></div>
+    <div class="excap" id="excap"></div>
+    <div class="modes">
+      <button class="big" type="button" data-mode="1" id="startSolo">Solo practice<small>Timer, hints, and an explanation for every miss</small></button>
+      <button class="big alt" type="button" data-mode="2" id="startDuo">Two players<small>Same screen. Left calls with A, right with L</small></button>
+    </div>
+    <details>
+      <summary>Options and two-player rules</summary>
+      <label><input type="checkbox" id="optAuto" checked> Solo: deal three more cards automatically when the table has no triad. Turn this off to practice spotting "no triad" yourself with the No triad button.</label>
+      <label><input type="checkbox" id="optCount"> Solo: show how many triads are on the table.</label>
+      <ul>
+        <li>When you see a triad, call it: press your key or your Call button. You then have 6 seconds to tap the three cards.</li>
+        <li>A correct triad goes to your pile for +1. A wrong pick or running out of time costs 1 point.</li>
+        <li>When the table has no triad, three more cards are dealt. If you're both stuck, press Deal 3 more (D). If a triad was there, it's shown before the new cards come out. The game ends when the deck is empty and no triads remain.</li>
+      </ul>
+    </details>
+    <button class="resume" type="button" id="btnResume" hidden>Back to the game</button>
+  </div>
+  <div class="panel" id="endPanel" hidden>
+    <h2 id="endTitle">Deck cleared</h2>
+    <div class="endstats" id="endStats"></div>
+    <div class="endrow">
+      <button class="big" type="button" id="btnAgain">Play again</button>
+      <button class="big alt" type="button" id="btnToMenu">Menu</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const layer = $('#layer'), boardEl = $('#board'), stackEl = $('#stack'), deckSpot = $('#deckSpot');
+const piles = [$('#pile0'), $('#pile1')];
+const trays = [$('#tray0'), $('#tray1')];
+
+/* ---------- card model ---------- */
+const COLORS = ['#e8710a', '#1f5fd1', '#26262b'];
+const LABEL = ['Number', 'Color', 'Shape', 'Fill'];
+const NAMES = [
+  ['one-symbol', 'two-symbol', 'three-symbol'],
+  ['orange', 'blue', 'black'],
+  ['circle', 'triangle', 'square'],
+  ['solid', 'dotted', 'outline'],
+];
+const attrs = id => [id % 3, Math.floor(id / 3) % 3, Math.floor(id / 9) % 3, Math.floor(id / 27) % 3];
+const isSet = (a, b, c) => { const A = attrs(a), B = attrs(b), C = attrs(c); return A.every((v, i) => (v + B[i] + C[i]) % 3 === 0); };
+function findSets(list) {
+  const ids = list.filter(x => x !== null), out = [];
+  for (let i = 0; i < ids.length; i++) for (let j = i + 1; j < ids.length; j++) for (let k = j + 1; k < ids.length; k++)
+    if (isSet(ids[i], ids[j], ids[k])) out.push([ids[i], ids[j], ids[k]]);
+  return out;
+}
+function explain(trio) {
+  const A = trio.map(attrs), bad = [];
+  for (let i = 0; i < 4; i++) {
+    const v = A.map(a => a[i]);
+    if ((v[0] + v[1] + v[2]) % 3 === 0) continue;
+    const dup = v[0] === v[1] || v[0] === v[2] ? v[0] : v[1];
+    const odd = v.find(x => x !== dup);
+    const nm = (x, plural) => i === 2 && plural ? NAMES[2][x] + 's' : NAMES[i][x];
+    bad.push(`${LABEL[i]}: two ${nm(dup, true)}, one ${nm(odd)}`);
+  }
+  return 'Not a triad. ' + bad.join(' · ');
+}
+function shapeMarkup(shape, cx, cy, s, fill, stroke) {
+  const a = `fill="${fill}" stroke="${stroke}" stroke-width="3.2" stroke-linejoin="round"`;
+  if (shape === 0) return `<circle cx="${cx}" cy="${cy}" r="${s * .5}" ${a}/>`;
+  if (shape === 1) { const h = s * .92, w = s * 1.12; return `<path d="M${cx} ${cy - h / 2}L${cx + w / 2} ${cy + h / 2}L${cx - w / 2} ${cy + h / 2}Z" ${a}/>`; }
+  const q = s * .86; return `<rect x="${cx - q / 2}" y="${cy - q / 2}" width="${q}" height="${q}" rx="2.5" ${a}/>`;
+}
+function faceSVG(id) {
+  const [n, c, sh, f] = attrs(id), count = n + 1, s = 32, gap = 42;
+  const fill = f === 0 ? COLORS[c] : f === 1 ? `url(#dot${c})` : 'none';
+  let out = '';
+  for (let k = 0; k < count; k++) out += shapeMarkup(sh, 50, 70 + (k - (count - 1) / 2) * gap, s, fill, COLORS[c]);
+  return `<svg viewBox="0 0 100 140" aria-label="${count} ${NAMES[1][c]} ${NAMES[3][f]} ${NAMES[2][sh]}${count > 1 ? 's' : ''}">${out}</svg>`;
+}
+
+/* ---------- sound ---------- */
+let actx = null, soundOn = true;
+try { soundOn = localStorage.getItem('triad-sound') !== 'off'; } catch (e) {}
+function ac() { if (!actx) { try { actx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { actx = null; } } if (actx && actx.state === 'suspended') actx.resume(); return actx; }
+function snap(vol = .45) {
+  const a = soundOn && ac(); if (!a) return;
+  const n = Math.floor(a.sampleRate * .05), b = a.createBuffer(1, n, a.sampleRate), d = b.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / n, 4);
+  const src = a.createBufferSource(); src.buffer = b;
+  const f = a.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1500 + Math.random() * 900; f.Q.value = .9;
+  const g = a.createGain(); g.gain.value = vol;
+  src.connect(f).connect(g).connect(a.destination); src.start();
+}
+function tone(freqs, dur = .22, type = 'sine', vol = .1, step = .075) {
+  const a = soundOn && ac(); if (!a) return;
+  freqs.forEach((fr, j) => {
+    const t = a.currentTime + j * step, o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.value = fr;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + .01); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + dur + .05);
+  });
+}
+const chime = () => tone([659, 880, 1319], .32, 'triangle', .12);
+const buzz = () => tone([196, 165], .2, 'square', .04, .1);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+/* ---------- state ---------- */
+let S = null, tick = null, claimTimer = null, msgTimer = null;
+const cards = {};
+const PNAMES = ['Left player', 'Right player'];
+const CLAIM_MS = 6000;
+
+/* ---------- geometry ---------- */
+function rel(el) {
+  const a = el.getBoundingClientRect(), b = layer.getBoundingClientRect();
+  return { left: a.left - b.left, top: a.top - b.top, width: a.width, height: a.height };
+}
+let slots = [];
+function computeSlots(n) {
+  const r = rel(boardEl), W = r.width, H = r.height;
+  const portrait = W < H * 0.95;
+  const cols = portrait ? 3 : Math.max(1, Math.ceil(n / 3));
+  const rows = portrait ? Math.max(1, Math.ceil(n / 3)) : 3;
+  const gap = Math.max(6, Math.min(18, Math.min(W, H) * .028));
+  let cw = Math.min((W - gap * (cols - 1)) / cols, ((H - gap * (rows - 1)) / rows) / 1.4, 150);
+  cw = Math.max(cw, 20);
+  const ch = cw * 1.4, tw = cols * cw + (cols - 1) * gap, th = rows * ch + (rows - 1) * gap;
+  const x0 = r.left + (W - tw) / 2, y0 = r.top + (H - th) / 2;
+  slots = [];
+  for (let i = 0; i < n; i++) {
+    const col = portrait ? i % 3 : Math.floor(i / 3), row = portrait ? Math.floor(i / 3) : i % 3;
+    slots.push({ x: x0 + col * (cw + gap), y: y0 + row * (ch + gap), w: cw, h: ch });
+  }
+}
+function jitter(id, amt) { return (((id * 7919) % 97) / 97 - .5) * amt; }
+function place(id, z) {
+  const c = cards[id]; if (!c) return;
+  let x, y, w, h, rot = 0, zi = 10;
+  if (c.loc.t === 'deck') {
+    const r = rel(stackEl); x = r.left; y = r.top; w = r.width; h = r.height; zi = 60;
+  } else if (c.loc.t === 'board') {
+    const s = slots[c.loc.i]; if (!s) return;
+    x = s.x; y = s.y; w = s.w; h = s.h; rot = jitter(id, 1.6);
+  } else {
+    const r = rel(piles[c.loc.p]), k = c.loc.k, j = k % 3;
+    w = r.width; h = r.height;
+    x = r.left + (j - 1) * w * .16; y = r.top - Math.floor(k / 3) * 1.1;
+    rot = (j - 1) * 7 + jitter(id, 6); zi = 100 + k;
+  }
+  c.el.style.width = w + 'px'; c.el.style.height = h + 'px';
+  c.el.style.transform = `translate(${x}px,${y}px) rotate(${rot}deg)`;
+  c.el.style.zIndex = z || zi;
+}
+function layoutBoard() {
+  if (!S) return;
+  computeSlots(S.board.length);
+  S.board.forEach(id => { if (id !== null && cards[id].loc.t === 'board') place(id); });
+}
+function layoutAll() {
+  if (!S) return;
+  layoutBoard();
+  for (const id in cards) if (cards[id].loc.t !== 'board') place(+id);
+}
+let resizeT = null;
+new ResizeObserver(() => {
+  layer.classList.add('noanim'); layoutAll();
+  clearTimeout(resizeT); resizeT = setTimeout(() => layer.classList.remove('noanim'), 80);
+}).observe($('#table'));
+
+/* ---------- rendering ---------- */
+function makeCard(id) {
+  const el = document.createElement('div');
+  el.className = 'card';
+  el.innerHTML = `<div class="lift"><div class="inner"><div class="face back cardback"></div><div class="face front">${faceSVG(id)}</div></div></div>`;
+  el.addEventListener('pointerdown', e => { e.preventDefault(); onCard(id); });
+  layer.appendChild(el);
+  return el;
+}
+function updateDeck() {
+  const n = S ? S.deck.length : 81;
+  $('#deckCount').textContent = n;
+  deckSpot.classList.toggle('empty', n === 0);
+  const L = Math.ceil(n / 7), sh = [];
+  for (let k = 1; k <= L; k++) sh.push(`0 ${k * 1.2}px 0 ${k % 2 ? '#d7cfbd' : '#f1ebdd'}`);
+  sh.push(`0 ${L * 1.2 + 4}px 10px rgba(0,0,0,.4)`);
+  stackEl.style.boxShadow = sh.join(',');
+  stackEl.style.transform = `translateY(${-L * 1.2}px)`;
+}
+const fmt = ms => { const s = Math.floor(ms / 1000); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+function elapsed() { return S ? (S.pausedAt || S.endAt || performance.now()) - S.start : 0; }
+function renderStats() {
+  if (!S) return;
+  const st = $('#stats');
+  if (S.mode === 1) {
+    let h = `<span><b>${S.start ? fmt(elapsed()) : '0:00'}</b>time</span><span><b>${S.found[0]}</b>found</span><span><b>${S.mistakes}</b>misses</span><span><b>${S.hints}</b>hints</span>`;
+    if (S.showCount) h += `<span><b>${findSets(S.board).length}</b>on table</span>`;
+    st.innerHTML = h;
+  } else {
+    st.innerHTML = `<span>Call a triad: <kbd>A</kbd> left · <kbd>L</kbd> right</span>`;
+  }
+}
+function updateTrays() {
+  if (!S) return;
+  for (const p of [0, 1]) {
+    const t = trays[p];
+    if (S.mode === 1) {
+      $('#tname0').textContent = 'Found'; $('#tscore0').textContent = S.found[0];
+      $('#tsub0').textContent = S.found[0] === 1 ? 'triad' : 'triads';
+      $('#tstate0').textContent = '';
+    } else {
+      $('#tname' + p).textContent = PNAMES[p];
+      $('#tscore' + p).textContent = S.score[p];
+      $('#tsub' + p).textContent = `${S.found[p]} found${S.pen[p] ? ` · −${S.pen[p]}` : ''}`;
+      $('#tstate' + p).textContent = S.claimant === p ? 'Pick three' : '';
+    }
+    t.classList.toggle('calling', S.claimant === p);
+    t.classList.toggle('frozen', !!S.frozen[p]);
+  }
+}
+function say(text, kind = '', ms = 2600) {
+  const m = $('#msg');
+  m.textContent = text; m.className = 'show ' + kind;
+  clearTimeout(msgTimer); msgTimer = setTimeout(() => m.classList.remove('show'), ms);
+}
+function clearHints() { for (const id in cards) cards[id].el.classList.remove('hint'); }
+
+/* ---------- dealing ---------- */
+async function shuffleAnim() {
+  deckSpot.classList.add('shuffling');
+  for (let i = 0; i < 3; i++) { for (let k = 0; k < 9; k++) setTimeout(() => snap(.28), 180 + k * 28 + i * 520); }
+  await sleep(1650);
+  deckSpot.classList.remove('shuffling');
+  await sleep(380);
+}
+async function dealInto(idxs) {
+  const g = S.gen;
+  for (const i of idxs) {
+    if (!S.deck.length || g !== S.gen) break;
+    const id = S.deck.pop();
+    S.board[i] = id;
+    const el = makeCard(id);
+    cards[id] = { el, loc: { t: 'deck' } };
+    el.classList.add('noanim'); place(id); void el.offsetWidth; el.classList.remove('noanim');
+    cards[id].loc = { t: 'board', i };
+    place(id, 70);
+    updateDeck(); snap();
+    setTimeout(() => el.classList.add('up'), 150);
+    setTimeout(() => { if (cards[id] && cards[id].loc.t === 'board') el.style.zIndex = 10; }, 700);
+    await sleep(105);
+  }
+  await sleep(480);
+}
+async function addThree() {
+  const s = S.board.length;
+  S.board.push(null, null, null);
+  layoutBoard();
+  await sleep(200);
+  await dealInto([s, s + 1, s + 2]);
+}
+function compactTo(newLen) {
+  const movers = [];
+  for (let i = newLen; i < S.board.length; i++) if (S.board[i] !== null) movers.push(S.board[i]);
+  for (let i = 0; i < newLen; i++) if (S.board[i] === null && movers.length) S.board[i] = movers.shift();
+  S.board.length = newLen;
+  S.board = S.board.filter(x => x !== null);
+  S.board.forEach((id, i) => { cards[id].loc = { t: 'board', i }; });
+}
+async function afterBoardChange() {
+  const g = S.gen;
+  S.hintSet = null; S.hintLevel = 0; clearHints();
+  if (S.board.some(x => x === null)) { compactTo(S.board.length); layoutBoard(); await sleep(300); }
+  while (g === S.gen) {
+    const n = findSets(S.board).length;
+    renderStats();
+    if (n > 0) return;
+    if (!S.deck.length) return gameOver();
+    if (!S.auto) return;
+    say('No triad on the table. Dealing three more.', '', 2200);
+    await sleep(800);
+    await addThree();
+  }
+}
+
+/* ---------- game flow ---------- */
+async function startGame(mode) {
+  hideOverlay();
+  clearInterval(tick); clearTimeout(claimTimer);
+  for (const id in cards) { cards[id].el.remove(); delete cards[id]; }
+  const gen = (S ? S.gen : 0) + 1;
+  S = {
+    mode, gen, deck: [...Array(81).keys()], board: [], sel: [], piles: [[], []],
+    found: [0, 0], score: [0, 0], pen: [0, 0], mistakes: 0, hints: 0, hintSet: null, hintLevel: 0,
+    claimant: null, frozen: [false, false], busy: true, over: false, start: 0, pausedAt: 0, endAt: 0,
+    auto: mode === 2 || $('#optAuto').checked, showCount: mode === 1 && $('#optCount').checked,
+  };
+  saveOpts();
+  for (let i = S.deck.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [S.deck[i], S.deck[j]] = [S.deck[j], S.deck[i]]; }
+  document.body.dataset.mode = mode;
+  $('#btnHint').hidden = mode !== 1;
+  $('#btnNone').hidden = mode !== 1 || S.auto;
+  updateTrays(); updateDeck(); renderStats();
+  $('#msg').classList.remove('show');
+  await sleep(60);
+  if (gen !== S.gen) return;
+  await shuffleAnim();
+  if (gen !== S.gen) return;
+  S.board = new Array(12).fill(null);
+  layoutBoard();
+  await dealInto([...Array(12).keys()]);
+  if (gen !== S.gen) return;
+  S.start = performance.now();
+  tick = setInterval(renderStats, 250);
+  await afterBoardChange();
+  if (gen === S.gen && !S.over) {
+    S.busy = false;
+    say(mode === 1 ? 'Find a triad. Tap three cards.' : 'First to see a triad: press your key.', '', 2600);
+  }
+}
+
+function onCard(id) {
+  if (!S || S.busy || S.over || !cards[id] || cards[id].loc.t !== 'board') return;
+  if (S.mode === 2 && S.claimant === null) {
+    say('Call it first: A for left, L for right.', '', 1800);
+    trays.forEach(t => { t.classList.remove('nudge'); void t.offsetWidth; t.classList.add('nudge'); });
+    return;
+  }
+  ac();
+  const i = S.sel.indexOf(id);
+  if (i >= 0) { S.sel.splice(i, 1); cards[id].el.classList.remove('sel'); return; }
+  S.sel.push(id); cards[id].el.classList.add('sel'); snap(.2);
+  if (S.sel.length === 3) evaluate();
+}
+
+async function evaluate() {
+  S.busy = true;
+  const g = S.gen, trio = S.sel.slice(), p = S.mode === 2 ? S.claimant : 0;
+  if (S.mode === 2) endClaim();
+  if (isSet(...trio)) {
+    await success(trio, p);
+  } else {
+    await fail(trio);
+    if (g !== S.gen) return;
+    if (S.mode === 1) S.mistakes++;
+    else penalize(p, false);
+  }
+  if (g !== S.gen) return;
+  renderStats(); updateTrays();
+  if (!S.over) S.busy = false;
+}
+
+async function success(trio, p) {
+  const g = S.gen;
+  S.sel = [];
+  trio.forEach(id => { const e = cards[id].el; e.classList.remove('sel', 'hint'); e.classList.add('ok'); });
+  chime();
+  say(S.mode === 1 ? 'Triad!' : `Triad for the ${PNAMES[p].toLowerCase()}! +1`, 'good', 1600);
+  await sleep(420);
+  if (g !== S.gen) return;
+  const idxs = trio.map(id => cards[id].loc.i).sort((a, b) => a - b);
+  trio.forEach((id, n) => {
+    const k = S.piles[p].length; S.piles[p].push(id);
+    cards[id].loc = { t: 'pile', p, k };
+    const e = cards[id].el; e.classList.remove('ok'); e.classList.add('inpile');
+    setTimeout(() => { place(id); snap(.25); }, n * 70);
+  });
+  idxs.forEach(i => { S.board[i] = null; });
+  S.found[p]++; S.score[p]++;
+  updateTrays(); renderStats();
+  await sleep(500);
+  if (g !== S.gen) return;
+  if (S.board.length > 12 || !S.deck.length) {
+    compactTo(S.board.length - 3); layoutBoard(); await sleep(450);
+  } else {
+    await dealInto(idxs);
+  }
+  if (g !== S.gen) return;
+  await afterBoardChange();
+}
+
+async function fail(trio) {
+  S.sel = [];
+  trio.forEach(id => cards[id].el.classList.add('bad'));
+  buzz();
+  say(explain(trio), 'bad', 4200);
+  await sleep(700);
+  trio.forEach(id => cards[id] && cards[id].el.classList.remove('bad', 'sel'));
+}
+
+/* two-player calling */
+function claim(p) {
+  if (!S || S.mode !== 2 || S.busy || S.over || S.claimant !== null) return;
+  ac();
+  S.claimant = p;
+  tone([523], .12, 'triangle', .08);
+  const bar = $('#cd' + p);
+  bar.style.transition = 'none'; bar.style.width = '100%'; void bar.offsetWidth;
+  bar.style.transition = `width ${CLAIM_MS}ms linear`; bar.style.width = '0%';
+  say(`${PNAMES[p]}: pick three cards.`, '', CLAIM_MS);
+  updateTrays();
+  claimTimer = setTimeout(() => {
+    if (!S || S.claimant !== p || S.busy) return;
+    S.sel.forEach(id => cards[id] && cards[id].el.classList.remove('sel'));
+    S.sel = [];
+    endClaim(); buzz();
+    penalize(p, true);
+  }, CLAIM_MS);
+}
+function endClaim() {
+  clearTimeout(claimTimer);
+  if (S) S.claimant = null;
+  updateTrays();
+}
+function penalize(p, timeout) {
+  S.score[p]--; S.pen[p]++;
+  const who = PNAMES[p];
+  if (timeout) say(`Time's up. ${who} −1.`, 'bad', 3200);
+  else setTimeout(() => S && say(`${who} −1.`, 'bad', 2600), 3000);
+  updateTrays();
+}
+
+/* solo helpers */
+function hint() {
+  if (!S || S.mode !== 1 || S.busy || S.over) return;
+  const sets = findSets(S.board);
+  if (!sets.length) { say(S.auto ? 'No triads left.' : 'There is no triad here. Press No triad.', '', 2200); return; }
+  if (!S.hintSet || !S.hintSet.every(id => S.board.includes(id))) {
+    S.hintSet = sets[Math.floor(Math.random() * sets.length)]; S.hintLevel = 0;
+  }
+  if (S.hintLevel < 2) { S.hintLevel++; S.hints++; }
+  S.hintSet.slice(0, S.hintLevel).forEach(id => cards[id].el.classList.add('hint'));
+  say(S.hintLevel === 1 ? 'This card is part of a triad.' : 'These two are in a triad. Which card completes it?', '', 2600);
+  renderStats();
+}
+async function noTriad() {
+  if (!S || S.mode !== 1 || S.busy || S.over) return;
+  if (findSets(S.board).length) {
+    S.mistakes++; buzz(); renderStats();
+    say('Look again: there is at least one triad on the table.', 'bad', 2600);
+    return;
+  }
+  S.busy = true;
+  const g = S.gen;
+  chime();
+  if (!S.deck.length) return gameOver();
+  say('Right, no triad here. Dealing three more.', 'good', 2000);
+  await addThree();
+  if (g !== S.gen) return;
+  await afterBoardChange();
+  if (g === S.gen && !S.over) S.busy = false;
+}
+
+async function dealMore() {
+  if (!S || S.busy || S.over || S.claimant !== null) return;
+  if (!S.deck.length) { say('The deck is empty, so there are no more cards to deal.', '', 2400); return; }
+  S.busy = true;
+  const g = S.gen;
+  S.sel.forEach(id => cards[id].el.classList.remove('sel')); S.sel = [];
+  const sets = findSets(S.board);
+  if (sets.length) {
+    clearHints();
+    sets[0].forEach(id => cards[id].el.classList.add('hint'));
+    say(`There was a triad here${sets.length > 1 ? ` (${sets.length} in all)` : ''}. Dealing three more.`, '', 3000);
+    await sleep(2200);
+    if (g !== S.gen) return;
+    clearHints();
+  } else {
+    say('Right, no triad here. Dealing three more.', 'good', 2000);
+  }
+  await addThree();
+  if (g !== S.gen) return;
+  await afterBoardChange();
+  if (g === S.gen && !S.over) S.busy = false;
+}
+
+/* ---------- end + overlay ---------- */
+function gameOver() {
+  S.over = true; S.busy = true; S.endAt = performance.now();
+  clearInterval(tick); endClaim(); renderStats();
+  say('That\'s the deck.', 'good', 3000);
+  const g = S.gen;
+  setTimeout(() => { if (g === S.gen) showEnd(); }, 1100);
+}
+function showEnd() {
+  const es = $('#endStats');
+  if (S.mode === 1) {
+    const t = elapsed();
+    let best = null;
+    try { best = +localStorage.getItem('triad-best') || null; } catch (e) {}
+    const clean = S.hints === 0;
+    let isBest = false;
+    if (clean && (!best || t < best)) { isBest = true; best = t; try { localStorage.setItem('triad-best', String(Math.round(t))); } catch (e) {} }
+    $('#endTitle').textContent = isBest ? 'New best time!' : 'Deck cleared';
+    const per = S.found[0] ? t / S.found[0] : 0;
+    es.innerHTML = `<div><b>${fmt(t)}</b>total time</div><div><b>${S.found[0]}</b>triads found</div><div><b>${(per / 1000).toFixed(1)}s</b>per triad</div><div><b>${S.mistakes}</b>misses</div><div><b>${S.hints}</b>hints</div><div><b>${best ? fmt(best) : '–'}</b>best (no hints)</div>`;
+  } else {
+    const [a, b] = S.score;
+    $('#endTitle').textContent = a === b ? 'It\'s a tie' : `${a > b ? PNAMES[0] : PNAMES[1]} wins`;
+    es.innerHTML = [0, 1].map(p => `<div><b>${S.score[p]}</b>${PNAMES[p].toLowerCase()} · ${S.found[p]} found, ${S.pen[p]} penalties</div>`).join('');
+  }
+  $('#startPanel').hidden = true; $('#endPanel').hidden = false; $('#overlay').hidden = false;
+  $('#btnAgain').focus();
+}
+function showMenu() {
+  if (S && !S.over && S.start && !S.pausedAt) {
+    S.pausedAt = performance.now();
+    if (S.claimant !== null) { clearTimeout(claimTimer); S.sel.forEach(id => cards[id].el.classList.remove('sel')); S.sel = []; endClaim(); }
+  }
+  $('#btnResume').hidden = !(S && !S.over && S.start);
+  $('#startPanel').hidden = false; $('#endPanel').hidden = true; $('#overlay').hidden = false;
+}
+function hideOverlay() { $('#overlay').hidden = true; }
+function resume() {
+  if (S && S.pausedAt) { S.start += performance.now() - S.pausedAt; S.pausedAt = 0; }
+  hideOverlay(); renderStats();
+}
+
+function saveOpts() { try { localStorage.setItem('triad-opts', JSON.stringify({ auto: $('#optAuto').checked, count: $('#optCount').checked })); } catch (e) {} }
+function loadOpts() {
+  try { const o = JSON.parse(localStorage.getItem('triad-opts') || 'null'); if (o) { $('#optAuto').checked = !!o.auto; $('#optCount').checked = !!o.count; } } catch (e) {}
+}
+
+/* ---------- wiring ---------- */
+$('#startSolo').onclick = () => startGame(1);
+$('#startDuo').onclick = () => startGame(2);
+$('#btnAgain').onclick = () => startGame(S ? S.mode : 1);
+$('#btnToMenu').onclick = showMenu;
+$('#btnMenu').onclick = showMenu;
+$('#btnResume').onclick = resume;
+$('#btnHint').onclick = hint;
+$('#btnNone').onclick = noTriad;
+$('#btnDeal').onclick = dealMore;
+$('#call0').onclick = () => claim(0);
+$('#call1').onclick = () => claim(1);
+const soundBtn = $('#btnSound');
+const syncSound = () => { soundBtn.textContent = soundOn ? 'Sound on' : 'Sound off'; };
+soundBtn.onclick = () => { soundOn = !soundOn; try { localStorage.setItem('triad-sound', soundOn ? 'on' : 'off'); } catch (e) {} syncSound(); if (soundOn) snap(); };
+syncSound();
+
+document.addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const k = e.key.toLowerCase();
+  if (!$('#overlay').hidden) { if (k === 'escape' && !$('#btnResume').hidden) resume(); return; }
+  if (k === 'a') claim(0);
+  else if (k === 'l') claim(1);
+  else if (k === 'h') hint();
+  else if (k === 'd') dealMore();
+  else if (k === 'n' && S && !S.auto) noTriad();
+  else if (k === 'escape' && S && !S.busy && S.mode === 1) { S.sel.forEach(id => cards[id].el.classList.remove('sel')); S.sel = []; }
+});
+
+/* example triad on the start panel */
+const EX = [3, 40, 77];
+$('#example').innerHTML = EX.map(id => `<div class="mini">${faceSVG(id)}</div>`).join('');
+const exA = EX.map(attrs);
+$('#excap').innerHTML = LABEL.map((l, i) => {
+  const v = exA.map(a => a[i]), same = v[0] === v[1];
+  return `<b>${l}</b><span>${same ? 'all ' + NAMES[i][v[0]] : 'all different'}</span>`;
+}).join('');
+
+loadOpts();
+document.body.dataset.mode = 1;
+updateDeck();
+$('#startSolo').focus();
+})();
+</script>
+</body>
+</html>
