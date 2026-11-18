@@ -189,16 +189,16 @@ body[data-mode="2"] .call{display:block}
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <pattern id="dot0" width="6.4" height="6.4" patternUnits="userSpaceOnUse"><circle cx="3.2" cy="3.2" r="1.75" fill="#e8710a"/></pattern>
-    <pattern id="dot1" width="6.4" height="6.4" patternUnits="userSpaceOnUse"><circle cx="3.2" cy="3.2" r="1.75" fill="#1f5fd1"/></pattern>
-    <pattern id="dot2" width="6.4" height="6.4" patternUnits="userSpaceOnUse"><circle cx="3.2" cy="3.2" r="1.75" fill="#26262b"/></pattern>
+    <pattern id="stripe0" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 2H4" fill="none" stroke="#ef534b" stroke-width="1.4"/></pattern>
+    <pattern id="stripe1" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 2H4" fill="none" stroke="#49b65b" stroke-width="1.4"/></pattern>
+    <pattern id="stripe2" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 2H4" fill="none" stroke="#8655a3" stroke-width="1.4"/></pattern>
   </defs>
 </svg>
 
 <div id="table">
   <header id="bar">
     <div class="brand">
-      <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="7" cy="8" r="5" fill="#e8710a"/><path d="M19 3l5.5 9.5h-11z" fill="#78c6ff"/><rect x="9" y="15" width="9" height="9" rx="1.5" fill="none" stroke="#f3eee3" stroke-width="2"/></svg>
+      <svg viewBox="0 0 26 26" aria-hidden="true"><path d="M7 2l4 6-4 6-4-6z" fill="#ef534b"/><rect x="16" y="2" width="7" height="13" rx="3.5" fill="none" stroke="#49b65b" stroke-width="2"/><path d="M10 16c-4 0 2 4-1 6s3 5 5 2-2-3 0-6-2-3-4-2z" fill="#8655a3"/></svg>
       Triad
     </div>
     <div id="stats"></div>
@@ -291,13 +291,13 @@ const piles = [$('#pile0'), $('#pile1')];
 const trays = [$('#tray0'), $('#tray1')];
 
 /* ---------- card model ---------- */
-const COLORS = ['#e8710a', '#1f5fd1', '#26262b'];
+const COLORS = ['#ef534b', '#49b65b', '#8655a3'];
 const LABEL = ['Number', 'Color', 'Shape', 'Fill'];
 const NAMES = [
   ['one-symbol', 'two-symbol', 'three-symbol'],
-  ['orange', 'blue', 'black'],
-  ['circle', 'triangle', 'square'],
-  ['solid', 'dotted', 'outline'],
+  ['red', 'green', 'purple'],
+  ['diamond', 'oval', 'squiggle'],
+  ['solid', 'striped', 'outline'],
 ];
 const attrs = id => [id % 3, Math.floor(id / 3) % 3, Math.floor(id / 9) % 3, Math.floor(id / 27) % 3];
 const isSet = (a, b, c) => { const A = attrs(a), B = attrs(b), C = attrs(c); return A.every((v, i) => (v + B[i] + C[i]) % 3 === 0); };
@@ -320,14 +320,21 @@ function explain(trio) {
   return 'Not a triad. ' + bad.join(' · ');
 }
 function shapeMarkup(shape, cx, cy, s, fill, stroke) {
-  const a = `fill="${fill}" stroke="${stroke}" stroke-width="3.2" stroke-linejoin="round"`;
-  if (shape === 0) return `<circle cx="${cx}" cy="${cy}" r="${s * .5}" ${a}/>`;
-  if (shape === 1) { const h = s * .92, w = s * 1.12; return `<path d="M${cx} ${cy - h / 2}L${cx + w / 2} ${cy + h / 2}L${cx - w / 2} ${cy + h / 2}Z" ${a}/>`; }
-  const q = s * .86; return `<rect x="${cx - q / 2}" y="${cy - q / 2}" width="${q}" height="${q}" rx="2.5" ${a}/>`;
+  const a = `fill="${fill}" stroke="${stroke}" stroke-width="2" stroke-linejoin="round"`;
+  const h = s, w = s * .5;
+  if (shape === 0) return `<path d="M${cx} ${cy - h / 2}L${cx + w / 2} ${cy}L${cx} ${cy + h / 2}L${cx - w / 2} ${cy}Z" ${a}/>`;
+  if (shape === 1) return `<rect x="${cx - w / 2}" y="${cy - h / 2}" width="${w}" height="${h}" rx="${w / 2}" ${a}/>`;
+  // Two rounded lobes and a narrow waist, like the reference deck's squiggle.
+  return `<path d="M${cx - s * .18} ${cy - s * .5}
+    C${cx - s * .44} ${cy - s * .46} ${cx - s * .32} ${cy - s * .26} ${cx - s * .2} ${cy - s * .18}
+    C${cx - s * .04} ${cy - s * .04} ${cx - s * .44} ${cy + s * .3} ${cx - s * .22} ${cy + s * .47}
+    C${cx + s * .02} ${cy + s * .65} ${cx + s * .36} ${cy + s * .46} ${cx + s * .19} ${cy + s * .28}
+    C${cx + s * .03} ${cy + s * .1} ${cx + s * .45} ${cy - s * .17} ${cx + s * .22} ${cy - s * .4}
+    C${cx + s * .1} ${cy - s * .52} ${cx - s * .05} ${cy - s * .54} ${cx - s * .18} ${cy - s * .5}Z" ${a}/>`;
 }
 function faceSVG(id) {
   const [n, c, sh, f] = attrs(id), count = n + 1, s = 32, gap = 42;
-  const fill = f === 0 ? COLORS[c] : f === 1 ? `url(#dot${c})` : 'none';
+  const fill = f === 0 ? COLORS[c] : f === 1 ? `url(#stripe${c})` : 'none';
   let out = '';
   for (let k = 0; k < count; k++) out += shapeMarkup(sh, 50, 70 + (k - (count - 1) / 2) * gap, s, fill, COLORS[c]);
   return `<svg viewBox="0 0 100 140" aria-label="${count} ${NAMES[1][c]} ${NAMES[3][f]} ${NAMES[2][sh]}${count > 1 ? 's' : ''}">${out}</svg>`;
